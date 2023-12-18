@@ -13,4 +13,8 @@ export class ApiService {
   public setConfig(config: Config) {
     return from(this.trpc.setConfig.mutate(config));
   }
+
+  public getConfig() {
+    return from(this.trpc.getConfig.query());
+  }
 }

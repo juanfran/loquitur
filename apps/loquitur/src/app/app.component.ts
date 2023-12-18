@@ -7,6 +7,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { SettingsComponent } from './settings/settings.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AppStore } from './app.store';
 
 @Component({
   standalone: true,
@@ -27,6 +28,9 @@ export class AppComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private appStore = inject(AppStore);
+
+  readonly config = this.appStore.config;
 
   public ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {

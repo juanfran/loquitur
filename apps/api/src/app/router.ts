@@ -1,12 +1,12 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
-import { setConfig } from './db';
+import { setConfig, getConfig } from './db';
 
 export const t = initTRPC.create();
 
 export const appRouter = t.router({
-  hi: t.procedure.query(() => {
-    return { hi: true };
+  getConfig: t.procedure.query(() => {
+    return getConfig();
   }),
   setConfig: t.procedure
     .input(
@@ -19,7 +19,7 @@ export const appRouter = t.router({
     .mutation(async (opts) => {
       await setConfig(opts.input);
 
-      return { success: true };
+      return await getConfig();
     }),
 });
 

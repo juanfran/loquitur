@@ -39,4 +39,10 @@ export async function setConfig(config: Config) {
   await db.write();
 }
 
+export async function getConfig() {
+  const db = await getDb();
+
+  return db.data.config;
+}
+
 initDb();

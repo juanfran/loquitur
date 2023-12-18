@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ApiService } from '../api.service';
+import { AppStore } from '../app.store';
 
 @Component({
   selector: 'loqui-settings',
@@ -14,12 +14,12 @@ import { ApiService } from '../api.service';
       <mat-dialog-content>
         <mat-form-field>
           <mat-label>BigBlueButton URL</mat-label>
-          <input type="url" matInput formControlName="openAIApiKey" />
+          <input type="url" matInput formControlName="bbbUrl" />
         </mat-form-field>
 
         <mat-form-field>
           <mat-label>BigBlueButton API key</mat-label>
-          <input matInput formControlName="openAIApiKey" />
+          <input matInput formControlName="bbbApiKey" />
         </mat-form-field>
 
         <mat-form-field>
@@ -53,17 +53,21 @@ import { ApiService } from '../api.service';
   ],
 })
 export class SettingsComponent {
-  public form = new FormGroup({
-    bbbUrl: new FormControl('', { nonNullable: true }),
-    bbbApiKey: new FormControl('', { nonNullable: true }),
-    openAIApiKey: new FormControl('', { nonNullable: true }),
-  });
+  private appStore = inject(AppStore);
 
-  private apiService = inject(ApiService);
+  readonly config = this.appStore.config;
+
+  public form = new FormGroup({
+    bbbUrl: new FormControl(this.config().bbbUrl, { nonNullable: true }),
+    bbbApiKey: new FormControl(this.config().bbbApiKey, { nonNullable: true }),
+    openAIApiKey: new FormControl(this.config().openAIApiKey, {
+      nonNullable: true,
+    }),
+  });
 
   submit() {
     if (this.form.valid) {
-      this.apiService.setConfig(this.form.value).subscribe();
+      this.appStore.actions.setConfig(this.form.value);
     }
   }
 }
