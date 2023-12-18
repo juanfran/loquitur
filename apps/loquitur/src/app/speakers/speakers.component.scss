@@ -1,0 +1,23 @@
+:host {
+  width: 400px;
+}
+
+mat-card-header {
+  margin-bottom: 1rem;
+}
+
+.speaker {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .5rem;;
+}
+
+.name {
+  cursor: pointer;
+}
+
+form {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}

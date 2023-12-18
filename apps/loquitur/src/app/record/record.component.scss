@@ -1,0 +1,25 @@
+.video {
+  position: relative;
+  margin-top: 2rem;
+
+  video {
+    width: 100%;
+
+    &.stuck {
+      position: fixed;
+      left: 10px;
+      width: 25%;
+      top: 10px;
+    }
+  }
+}
+
+loqui-record-text {
+  margin-top: 2rem;
+}
+
+loqui-speakers {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}

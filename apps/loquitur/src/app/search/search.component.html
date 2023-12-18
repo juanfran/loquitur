@@ -1,0 +1,11 @@
+@for (search of result(); track $index) {
+<div class="search">
+  <a
+    mat-button
+    [routerLink]="['/record', search.record]"
+    [queryParams]="{ segment: search.segment }"
+    >{{ search.text }}</a
+  >
+  <mat-divider></mat-divider>
+</div>
+}

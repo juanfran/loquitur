@@ -8,15 +8,25 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/loquitur",
         "index": "apps/loquitur/src/index.html",
         "browser": "apps/loquitur/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/loquitur/tsconfig.app.json",
-        "assets": ["apps/loquitur/src/favicon.ico", "apps/loquitur/src/assets"],
-        "styles": ["apps/loquitur/src/styles.css"],
+        "assets": [
+          "apps/loquitur/src/favicon.ico",
+          "apps/loquitur/src/assets"
+        ],
+        "styles": [
+          "@angular/material/prebuilt-themes/indigo-pink.css",
+          "apps/loquitur/src/styles.css"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -63,11 +73,15 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "outputs": [
+        "{options.outputFile}"
+      ]
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/loquitur/jest.config.ts"
       }

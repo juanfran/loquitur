@@ -1,1 +1,18 @@
-<loquitur-nx-welcome></loquitur-nx-welcome> <router-outlet></router-outlet>
+<mat-toolbar color="primary">
+  <div class="logo">
+    <a mat-button [routerLink]="['/']">
+      <img ngSrc="/assets/logo.png" width="40" height="40" />
+    </a>
+  </div>
+  <span class="spacer"></span>
+  <form (submit)="submit()">
+    <div class="search">
+      <input type="text" [formControl]="form" />
+      <mat-icon color="primary">search</mat-icon>
+    </div>
+  </form>
+</mat-toolbar>
+
+<div class="main">
+  <router-outlet></router-outlet>
+</div>

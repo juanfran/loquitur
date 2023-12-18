@@ -1,0 +1,12 @@
+@for (entry of result; track entry; let i = $index) {
+  <div class="entry">
+    <p
+      id="entry-{{ entry.id }}"
+      (click)="selectResult(entry)"
+      class="text mat-headline-3"
+      [class.current]="i === currentIndex">
+      {{ entry.speakers }}:
+      {{ entry.text }}
+    </p>
+  </div>
+}
