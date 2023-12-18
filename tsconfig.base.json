@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@loqui/api/*": ["apps/api/src/*"],
+      "@loquitur/commons": ["commons/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

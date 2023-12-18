@@ -49,3 +49,7 @@ mat-toolbar {
     display: block;
   }
 }
+
+.settings {
+  padding-inline-start: var(--size-2);
+}

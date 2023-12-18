@@ -7,16 +7,24 @@ import { Recording } from './models/recordings.model';
 import { SearchResult } from './models/search-result.model';
 import { Speaker } from './models/speaker.model';
 import { Whisper } from './models/whisper.model';
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
+import type { AppRouter } from '@loqui/api/app/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppService {
+  private baseUrl = 'http://localhost:3000';
+
   public recordings$ = new BehaviorSubject<Recording[]>([]);
   public whisper$ = new BehaviorSubject<Whisper | undefined>(undefined);
   public speakers$ = new BehaviorSubject<Speaker[]>([]);
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {
     this.wsListen();
   }
 
@@ -28,23 +36,26 @@ export class AppService {
       return;
     }
 
-    this.http.get<Recording[]>('http://localhost:8080/api/recordings').pipe(
-      map((recordings) => {
-        recordings.sort((a, b) => (a.startTime > b.startTime) ? -1 : 1);
+    this.http
+      .get<Recording[]>('http://localhost:8080/api/recordings')
+      .pipe(
+        map((recordings) => {
+          recordings.sort((a, b) => (a.startTime > b.startTime ? -1 : 1));
 
-        return recordings;
-      }),
-    ).subscribe((recordings) => {
-      this.recordings$.next(recordings);
-    })
+          return recordings;
+        })
+      )
+      .subscribe((recordings) => {
+        this.recordings$.next(recordings);
+      });
   }
 
   public initFetch(id: Recording['recordID']) {
     const recordings = this.recordings$.value.map((it) => {
       return {
         ...it,
-        appState: it.recordID === id ? 'inprogress' : it.appState
-      }
+        appState: it.recordID === id ? 'inprogress' : it.appState,
+      };
     });
 
     this.recordings$.next(recordings);
@@ -54,8 +65,12 @@ export class AppService {
 
   public getText(id: Recording['recordID']) {
     zip(
-      this.http.get<Whisper>(`http://localhost:8080/static/${id}/${id}-whisper.json`),
-      this.http.get<Speaker[]>(`http://localhost:8080/static/${id}/${id}-speakers.json`)
+      this.http.get<Whisper>(
+        `http://localhost:8080/static/${id}/${id}-whisper.json`
+      ),
+      this.http.get<Speaker[]>(
+        `http://localhost:8080/static/${id}/${id}-speakers.json`
+      )
     ).subscribe(([whisper, speakers]) => {
       this.whisper$.next(whisper);
       this.speakers$.next(speakers);
@@ -65,8 +80,8 @@ export class AppService {
   public search(term: string) {
     return this.http.get<SearchResult[]>(`http://localhost:8080/api/search`, {
       params: {
-        term
-      }
+        term,
+      },
     });
   }
 
@@ -83,8 +98,8 @@ export class AppService {
     const recordings = this.recordings$.value.map((it) => {
       return {
         ...it,
-        appState: it.recordID === id ? 'done' : it.appState
-      }
+        appState: it.recordID === id ? 'done' : it.appState,
+      };
     });
 
     this.recordings$.next(recordings);
@@ -99,15 +114,19 @@ export class AppService {
   public getMinutes(milliseconds: number) {
     const minutes = Math.floor(milliseconds / 60000);
     const seconds = Number(((milliseconds % 60000) / 1000).toFixed(0));
-    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   }
 
-  public editSpeaker(id: Recording['recordID'], oldName: string, newName: string) {
+  public editSpeaker(
+    id: Recording['recordID'],
+    oldName: string,
+    newName: string
+  ) {
     const newSpeaker = this.speakers$.value.map((it) => {
       if (it.speaker === oldName) {
         return {
           ...it,
-          speaker: newName
+          speaker: newName,
         };
       }
 
@@ -116,9 +135,26 @@ export class AppService {
 
     this.speakers$.next(newSpeaker);
 
-    this.http.post(`http://localhost:8080/api/speakers/${id}`, {
-      oldName,
-      newName
-    }).subscribe();
+    this.http
+      .post(`http://localhost:8080/api/speakers/${id}`, {
+        oldName,
+        newName,
+      })
+      .subscribe();
+  }
+
+  public getTrpcConfig() {
+    return createTRPCProxyClient<AppRouter>({
+      links: [
+        httpBatchLink({
+          url: this.baseUrl + '/trpc',
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+            });
+          },
+        }),
+      ],
+    });
   }
 }

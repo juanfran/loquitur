@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
   <div class="logo">
     <a mat-button [routerLink]="['/']">
-      <img ngSrc="/assets/logo.png" width="40" height="40" />
+      <img ngSrc="/assets/logo.png" width="40" height="40" priority />
     </a>
   </div>
   <span class="spacer"></span>
@@ -11,6 +11,12 @@
       <mat-icon color="primary">search</mat-icon>
     </div>
   </form>
+
+  <div class="settings">
+    <button mat-mini-fab color="primary" (click)="openSettings()">
+      <mat-icon>settings</mat-icon>
+    </button>
+  </div>
 </mat-toolbar>
 
 <div class="main">
