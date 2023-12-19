@@ -1,8 +1,11 @@
 import { FastifyInstance } from 'fastify';
 import { pipeline } from 'node:stream';
 import util from 'node:util';
+import path from 'node:path';
 const pump = util.promisify(pipeline);
 import fs from 'fs';
+import { v4 } from 'uuid';
+import { runPython } from './utils/run-python';
 
 function wait() {
   return new Promise((resolve) => {
@@ -21,11 +24,19 @@ export async function appRouter(fastify: FastifyInstance) {
         part.mimetype.startsWith('video') ||
         part.mimetype.startsWith('audio')
       ) {
-        await pump(part.file, fs.createWriteStream('uploads/' + part.filename));
+        const id = v4();
+
+        const ext = path.extname(part.filename);
+        const rootFile = 'uploads/' + id + '/';
+
+        fs.mkdirSync(rootFile);
+        const filePath = rootFile + id + ext;
+
+        await pump(part.file, fs.createWriteStream(filePath));
+
+        await runPython(filePath, id);
       }
     }
-
-    await wait();
 
     reply.send();
   });

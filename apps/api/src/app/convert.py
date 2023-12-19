@@ -1,9 +1,7 @@
-# from pyannote.audio import Pipeline
-# import whisper
 import moviepy.editor as moviepy
 import json
 import sys
-
+import os
 import whisperx
 import gc
 
@@ -54,3 +52,5 @@ result_json_string = json.dumps(result["segments"], indent=2)
 
 with open(srt, 'w') as outfile:
     outfile.write(result_json_string)
+
+# os.remove(source)

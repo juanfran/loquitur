@@ -23,3 +23,7 @@ pip install torch==2.0.0 torchaudio==2.0.0 torchvision==2.0.0 moviepy==1.0.3 --e
 pip install git+https://github.com/m-bain/whisperx.git
 
 best follow whisper guide
+
+cp .env.sample .env
+
+and edit .env
