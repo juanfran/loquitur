@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SettingsComponent } from './settings/settings.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AppStore } from './app.store';
+import { AddMediaComponent } from './add-media/add-media.component';
 
 @Component({
   standalone: true,
@@ -49,6 +50,12 @@ export class AppComponent implements OnInit {
   public openSettings() {
     this.dialog.open(SettingsComponent, {
       width: '450px',
+    });
+  }
+
+  public addMedia() {
+    this.dialog.open(AddMediaComponent, {
+      width: '650px',
     });
   }
 }

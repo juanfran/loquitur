@@ -14,7 +14,7 @@ import type { AppRouter } from '@loqui/api/app/router';
   providedIn: 'root',
 })
 export class AppService {
-  private baseUrl = 'http://localhost:3000';
+  readonly baseUrl = 'http://localhost:3000';
 
   public recordings$ = new BehaviorSubject<Recording[]>([]);
   public whisper$ = new BehaviorSubject<Whisper | undefined>(undefined);

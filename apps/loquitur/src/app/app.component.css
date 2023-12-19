@@ -50,6 +50,7 @@ mat-toolbar {
   }
 }
 
-.settings {
+.settings,
+.download {
   padding-inline-start: var(--size-2);
 }

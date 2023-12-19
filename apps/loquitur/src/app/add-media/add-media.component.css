@@ -1,0 +1,13 @@
+.content {
+  padding: var(--size-4);
+}
+
+.upload {
+  padding-block: var(--size-4);
+  display: flex;
+  justify-content: center;
+
+  mat-progress-bar {
+    inline-size: 75%;
+  }
+}

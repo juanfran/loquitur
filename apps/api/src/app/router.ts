@@ -4,7 +4,7 @@ import { setConfig, getConfig } from './db';
 
 export const t = initTRPC.create();
 
-export const appRouter = t.router({
+export const trpcRouter = t.router({
   getConfig: t.procedure.query(() => {
     return getConfig();
   }),
@@ -24,4 +24,4 @@ export const appRouter = t.router({
 });
 
 // export type definition of API
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof trpcRouter;
