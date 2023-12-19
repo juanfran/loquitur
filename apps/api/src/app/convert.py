@@ -53,4 +53,3 @@ result_json_string = json.dumps(result["segments"], indent=2)
 with open(srt, 'w') as outfile:
     outfile.write(result_json_string)
 
-# os.remove(source)

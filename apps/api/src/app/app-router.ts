@@ -6,6 +6,7 @@ const pump = util.promisify(pipeline);
 import fs from 'fs';
 import { v4 } from 'uuid';
 import { runPython } from './utils/run-python';
+import { WhisperResponse } from '@loquitur/commons';
 
 function wait() {
   return new Promise((resolve) => {
@@ -27,14 +28,40 @@ export async function appRouter(fastify: FastifyInstance) {
         const id = v4();
 
         const ext = path.extname(part.filename);
+        const fileName = path.basename(part.filename, ext);
         const rootFile = 'uploads/' + id + '/';
 
         fs.mkdirSync(rootFile);
+
         const filePath = rootFile + id + ext;
 
         await pump(part.file, fs.createWriteStream(filePath));
 
         await runPython(filePath, id);
+
+        const dataPath = rootFile + id + '-whisper.json';
+        const data = JSON.parse(
+          fs.readFileSync(dataPath, 'utf8')
+        ) as WhisperResponse[];
+
+        const speakers = new Set<string>();
+
+        data.forEach((whisper) => {
+          whisper.words.forEach((word) => {
+            if (word.speaker) {
+              speakers.add(word.speaker);
+            }
+          });
+        });
+
+        const metadata = {
+          name: fileName,
+          speakers: Array.from(speakers),
+          date: new Date().toISOString(),
+          size: fs.statSync(filePath).size,
+        };
+
+        fs.writeFileSync(rootFile + 'metadata.json', JSON.stringify(metadata));
       }
     }
 

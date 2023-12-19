@@ -1,6 +1,6 @@
 export interface Recording {
-  recordID: string,
-  meetingID: string,
+  recordID: string;
+  meetingID: string;
   internalMeetingID: string;
   name: string;
   isBreakout: boolean;
@@ -11,29 +11,29 @@ export interface Recording {
   participants: number;
   rawSize: number;
   metadata: {
-      "bbb-origin-version": string;
-      meetingName: string;
-      meetingId: string;
-      "gl-listed": boolean;
-      "bbb-origin": string;
-      "isBreakout": boolean;
-      "bbb-origin-server-name": string;
-  },
+    'bbb-origin-version': string;
+    meetingName: string;
+    meetingId: string;
+    'gl-listed': boolean;
+    'bbb-origin': string;
+    isBreakout: boolean;
+    'bbb-origin-server-name': string;
+  };
   size: number;
   playback: {
-      format: {
-          type: string;
-          url: string;
-          processingTime: number;
-          length: number;
-          size: number;
-          preview?: {
-            images: {
-              image: string[];
-            }
-          }
-      }
-  },
+    format: {
+      type: string;
+      url: string;
+      processingTime: number;
+      length: number;
+      size: number;
+      preview?: {
+        images: {
+          image: string[];
+        };
+      };
+    };
+  };
   data: string;
-  appState: 'none' | 'inprogress' | 'done'
+  appState: 'none' | 'inprogress' | 'done';
 }

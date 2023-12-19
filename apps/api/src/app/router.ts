@@ -1,10 +1,14 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 import { setConfig, getConfig } from './db';
+import { getRecordings } from './utils/get-recordings';
 
 export const t = initTRPC.create();
 
 export const trpcRouter = t.router({
+  recordings: t.procedure.query(() => {
+    return getRecordings();
+  }),
   getConfig: t.procedure.query(() => {
     return getConfig();
   }),

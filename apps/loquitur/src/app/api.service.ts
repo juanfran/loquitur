@@ -20,6 +20,10 @@ export class ApiService {
     return from(this.trpc.getConfig.query());
   }
 
+  public getRecordings() {
+    return from(this.trpc.recordings.query());
+  }
+
   public uploadMedia(files: File[]) {
     const formData = new FormData();
 
