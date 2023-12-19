@@ -4,4 +4,5 @@ export interface Recording {
   duration: number;
   speakers: string[];
   date: string;
+  preview?: string;
 }

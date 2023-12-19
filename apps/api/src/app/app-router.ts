@@ -6,7 +6,6 @@ const pump = util.promisify(pipeline);
 import fs from 'fs';
 import { v4 } from 'uuid';
 import { runPython } from './utils/run-python';
-import { WhisperResponse } from '@loquitur/commons';
 import { readJSONFile } from './utils/read-json-file';
 
 function wait() {

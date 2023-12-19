@@ -12,6 +12,9 @@ export function getRecordings() {
       fs.readFileSync(`uploads/${id}/metadata.json`, 'utf8')
     );
 
+    const imagePath = `uploads/${id}.jpg`;
+    let image = '';
+
     return {
       id,
       ...meta,

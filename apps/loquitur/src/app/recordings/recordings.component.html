@@ -3,34 +3,33 @@
   name="filterType"
   aria-label="Filter type"
   (change)="newType($event)"
-  >
+>
   <mat-button-toggle value="all">All</mat-button-toggle>
   <mat-button-toggle value="done">Ready</mat-button-toggle>
 </mat-button-toggle-group>
 
-@for (record of recordings$ | async; track record) {
-  <mat-card class="card">
-    <mat-card-header>
-      <mat-card-title-group>
-        <mat-card-title>{{ record.name }} </mat-card-title>
-        <mat-card-subtitle
-          >{{ record.startTime | date : 'medium' }}
-        </mat-card-subtitle>
-        @if (record.playback.format.preview) {
+@for (record of recordings(); track record.id) {
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>{{ record.name }} </mat-card-title>
+      <mat-card-subtitle
+        >{{ record.date | date : 'medium' }}
+      </mat-card-subtitle>
+      <!-- @if (record.preview) {
           <img
             mat-card-sm-image
             [src]="record.playback.format.preview.images.image[0]"
             />
-        }
-      </mat-card-title-group>
-    </mat-card-header>
-    <mat-card-content>
-      <p><span>Duration:</span> {{ record | loquiHowLong }}</p>
-      <p><span>Participants:</span> {{ record.participants }}</p>
-      <p><span>Size:</span> {{ record.size * 0.000001 | number : '1.0-1' }}MB</p>
-      <mat-divider></mat-divider>
-    </mat-card-content>
-    <mat-card-actions>
+        } -->
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <p><span>Duration:</span> {{ record.duration }}</p>
+    <p><span>Speakers:</span> {{ record.speakers.length }}</p>
+    <mat-divider></mat-divider>
+  </mat-card-content>
+  <!-- <mat-card-actions>
       <a target="_blank" [href]="record.playback.format.url" mat-button
         >Go to BBB</a
         >
@@ -43,6 +42,6 @@
         @if (record.appState === 'done') {
           <a mat-button [routerLink]="['record', record.recordID]">Detail</a>
         }
-      </mat-card-actions>
-    </mat-card>
-  }
+      </mat-card-actions> -->
+</mat-card>
+}
