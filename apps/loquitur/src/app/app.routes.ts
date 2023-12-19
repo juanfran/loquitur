@@ -1,10 +1,22 @@
 import { Route } from '@angular/router';
-import { RecordingsComponent } from './recordings/recordings.component';
-import { RecordComponent } from './record/record.component';
-import { SearchComponent } from './search/search.component';
 
 export const appRoutes: Route[] = [
-  { path: '', component: RecordingsComponent },
-  { path: 'record/:id', component: RecordComponent },
-  { path: 'search', component: SearchComponent },
+  {
+    path: '',
+
+    loadComponent: () =>
+      import('./recordings/recordings.component').then(
+        (m) => m.RecordingsComponent
+      ),
+  },
+  {
+    path: 'record/:id',
+    loadComponent: () =>
+      import('./record/record.component').then((m) => m.RecordComponent),
+  },
+  {
+    path: 'search',
+    loadComponent: () =>
+      import('./search/search.component').then((m) => m.SearchComponent),
+  },
 ];
