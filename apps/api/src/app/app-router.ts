@@ -40,29 +40,17 @@ export async function appRouter(fastify: FastifyInstance) {
 
         await runPython(filePath, id);
 
-        const dataPath = rootFile + id + '-whisper.json';
-        const data = readJSONFile(dataPath) as WhisperResponse[];
-        const speakers = new Set<string>();
-
-        data.forEach((whisper) => {
-          whisper.words.forEach((word) => {
-            if (word.speaker) {
-              speakers.add(word.speaker);
-            }
-          });
-        });
-
         const metadataPath = rootFile + 'metadata.json';
 
         const initialData = readJSONFile(metadataPath) as {
           duration: number;
           size: number;
+          speakers: string[];
         };
 
         const metadata = {
           ...initialData,
           name: fileName,
-          speakers: Array.from(speakers),
           date: new Date().toISOString(),
         };
 

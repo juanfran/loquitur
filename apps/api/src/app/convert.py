@@ -53,9 +53,17 @@ result_json_string = json.dumps(result["segments"], indent=2)
 with open(srt, 'w') as outfile:
     outfile.write(result_json_string)
 
+speakers = set()
+
+for whisper in result["segments"]:
+    for word in whisper['words']:
+        if 'speaker' in word:
+            speakers.add(word['speaker'])
+
 metadata_json = folder + "metadata.json"
 metadata = {
-  "duration": int(clip.duration)
+  "duration": int(clip.duration),
+  "speakers": list(speakers),
 }
 metadata_json_string = json.dumps(metadata, indent=2)
 
