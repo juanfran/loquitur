@@ -53,3 +53,12 @@ result_json_string = json.dumps(result["segments"], indent=2)
 with open(srt, 'w') as outfile:
     outfile.write(result_json_string)
 
+metadata_json = folder + "metadata.json"
+metadata = {
+  "duration": int(clip.duration)
+}
+metadata_json_string = json.dumps(metadata, indent=2)
+
+with open(metadata_json, 'w') as outfile:
+  outfile.write(metadata_json_string)
+

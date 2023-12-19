@@ -7,6 +7,7 @@ import fs from 'fs';
 import { v4 } from 'uuid';
 import { runPython } from './utils/run-python';
 import { WhisperResponse } from '@loquitur/commons';
+import { readJSONFile } from './utils/read-json-file';
 
 function wait() {
   return new Promise((resolve) => {
@@ -40,10 +41,7 @@ export async function appRouter(fastify: FastifyInstance) {
         await runPython(filePath, id);
 
         const dataPath = rootFile + id + '-whisper.json';
-        const data = JSON.parse(
-          fs.readFileSync(dataPath, 'utf8')
-        ) as WhisperResponse[];
-
+        const data = readJSONFile(dataPath) as WhisperResponse[];
         const speakers = new Set<string>();
 
         data.forEach((whisper) => {
@@ -54,14 +52,21 @@ export async function appRouter(fastify: FastifyInstance) {
           });
         });
 
+        const metadataPath = rootFile + 'metadata.json';
+
+        const initialData = readJSONFile(metadataPath) as {
+          duration: number;
+          size: number;
+        };
+
         const metadata = {
+          ...initialData,
           name: fileName,
           speakers: Array.from(speakers),
           date: new Date().toISOString(),
-          size: fs.statSync(filePath).size,
         };
 
-        fs.writeFileSync(rootFile + 'metadata.json', JSON.stringify(metadata));
+        fs.writeFileSync(metadataPath, JSON.stringify(metadata));
       }
     }
 
