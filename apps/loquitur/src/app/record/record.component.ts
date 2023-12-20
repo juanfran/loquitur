@@ -10,7 +10,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { AppService } from '../app.service';
 import { MatCardModule } from '@angular/material/card';
@@ -45,7 +44,6 @@ export class RecordComponent {
   #apiService = inject(ApiService);
   #appService = inject(AppService);
   #queryClient = injectQueryClient();
-  #route = inject(ActivatedRoute);
   #id = signal<string>('');
   #cd = inject(ChangeDetectorRef);
   #destroyRef = inject(DestroyRef);
@@ -75,26 +73,36 @@ export class RecordComponent {
 
   @HostListener('window:scroll')
   public onScroll() {
-    const scollPosition = window.scrollY;
-
-    if (this.videoElementRef) {
-      const videoWrapper = this.videoElementRef.nativeElement as HTMLElement;
-      const video = videoWrapper.querySelector<HTMLElement>('video');
-
-      if (video) {
-        const videoBottom = videoWrapper.getBoundingClientRect().bottom;
-        const videoHeight = videoWrapper.getBoundingClientRect().height;
-
-        if (scollPosition > videoBottom + videoHeight) {
-          video.classList.add('stuck');
-        } else {
-          video.classList.remove('stuck');
-        }
-      }
-    }
+    // const scollPosition = window.scrollY;
+    // if (this.videoElementRef) {
+    //   const videoWrapper = this.videoElementRef.nativeElement as HTMLElement;
+    //   const video = videoWrapper.querySelector<HTMLElement>('video');
+    //   if (video) {
+    //     const videoBottom = videoWrapper.getBoundingClientRect().bottom;
+    //     console.log(videoBottom);
+    //     const videoHeight = videoWrapper.getBoundingClientRect().height;
+    //     if (videoBottom <= 0 && !video.classList.contains('stuck')) {
+    //       video.classList.add('stuck');
+    //     } else {
+    //       video.classList.remove('stuck');
+    //     }
+    //   }
+    // }
+    // if (this.speakersWrapper) {
+    //   const speakersWrapper = this.speakersWrapper.nativeElement as HTMLElement;
+    //   const speakersPosition = speakersWrapper.getBoundingClientRect().top;
+    //   console.log(speakersPosition, scollPosition);
+    //   if (speakersPosition <= 10) {
+    //     speakersWrapper.classList.add('stuck');
+    //   } else {
+    //     speakersWrapper.classList.remove('stuck');
+    //   }
+    // }
   }
 
-  @ViewChild('videoElm') public videoElementRef!: ElementRef;
+  @ViewChild('videoElm') public videoElementRef!: ElementRef<HTMLElement>;
+  @ViewChild('speakersWrapper')
+  public speakersWrapper!: ElementRef<HTMLElement>;
 
   public videoTime: number = 0;
 

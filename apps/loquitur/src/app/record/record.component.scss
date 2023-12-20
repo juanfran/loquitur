@@ -1,25 +1,37 @@
+:host {
+  display: block;
+  padding: var(--size-4);
+}
+
 .video {
-  position: relative;
-  margin-top: 2rem;
+  inline-size: 25%;
 
   video {
     width: 100%;
-
-    &.stuck {
-      position: fixed;
-      left: 10px;
-      width: 25%;
-      top: 10px;
-    }
   }
 }
 
 loqui-record-text {
-  margin-top: 2rem;
+  margin-block-start: var(--size-5);
 }
 
-loqui-speakers {
-  position: fixed;
-  top: 10px;
-  right: 10px;
+.record-info {
+  inline-size: 50%;
+}
+
+
+.speakers-wrapper {
+  position: sticky;
+  inline-size: 25%;
+}
+
+.content {
+  inline-size: 100%;
+  display: flex;
+  gap: var(--size-4);
+}
+
+loqui-speakers, video {
+  position: sticky;
+  top: var(--size-4);
 }

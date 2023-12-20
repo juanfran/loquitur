@@ -3,36 +3,46 @@
 } @if (recordQuery.error()) {
 <p>An error has occurred: {{ recordQuery.error() }}</p>
 } @if (recordQuery.data(); as record) {
-<mat-card>
-  <mat-card-header>
-    <mat-card-title-group>
-      <mat-card-title>{{ record.name }} </mat-card-title>
-      <mat-card-subtitle>{{ record | loquiHowLong }} </mat-card-subtitle>
-    </mat-card-title-group>
-  </mat-card-header>
-  <mat-card-content>
-    <p><span>Duration:</span> {{ record.duration | loquiDuration }}</p>
-    <p><span>Speakers:</span> {{ record.speakers.length }}</p>
-  </mat-card-content>
-</mat-card>
-<div class="video" #videoElm>
-  <video
-    controls
-    [src]="baseUrl + record.video"
-    (timeupdate)="timeUpdate($event)"
-    (loadstart)="initVideo()"
-  ></video>
+<div class="content">
+  <div class="video" #videoElm>
+    <video
+      controls
+      [src]="baseUrl + record.video"
+      (timeupdate)="timeUpdate($event)"
+      (loadstart)="initVideo()"
+    ></video>
+  </div>
+
+  <div class="record-info">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title-group>
+          <mat-card-title>{{ record.name }} </mat-card-title>
+          <mat-card-subtitle>{{ record | loquiHowLong }} </mat-card-subtitle>
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content>
+        <p><span>Duration:</span> {{ record.duration | loquiDuration }}</p>
+        <p><span>Speakers:</span> {{ record.speakers.length }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    @if (textQuery.data(); as text) {
+    <loqui-record-text
+      (selectTime)="selectTime($event)"
+      [whisper]="text"
+      [time]="videoTime"
+    ></loqui-record-text>
+    }
+  </div>
+
+  @if (textQuery.data(); as text) {
+  <div class="speakers-wrapper" #speakersWrapper>
+    <loqui-speakers
+      [whisper]="text"
+      (newName)="setNewName($event)"
+    ></loqui-speakers>
+  </div>
+  }
 </div>
-
-@if (textQuery.data(); as text) {
-<loqui-record-text
-  (selectTime)="selectTime($event)"
-  [whisper]="text"
-  [time]="videoTime"
-></loqui-record-text>
-
-<loqui-speakers
-  [whisper]="text"
-  (newName)="setNewName($event)"
-></loqui-speakers>
-} }
+}
