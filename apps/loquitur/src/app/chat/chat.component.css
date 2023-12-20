@@ -6,6 +6,13 @@ mat-dialog-content {
 
 .text {
   color: var(--gray-12);
+  padding: var(--size-2);
+  border-radius: var(--radius-2);
+  background-color: var(--blue-1);
+
+  &.ai {
+    background-color: var(--gray-1);
+  }
 
   p {
     margin: 0;

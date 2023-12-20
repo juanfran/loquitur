@@ -19,39 +19,7 @@ import { MatInputModule } from '@angular/material/input';
           lectus gravida aliquet.
         </div>
       </div>
-      <div class="text">
-        <p class="user">AI</p>
-        <div class="response">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut eros
-          in massa tristique ultrices non quis erat. Nulla gravida dolor vitae
-          lectus gravida aliquet.
-        </div>
-      </div>
-      <div class="text">
-        <p class="user">You</p>
-        <div class="response">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut eros
-          in massa tristique ultrices non quis erat. Nulla gravida dolor vitae
-          lectus gravida aliquet.
-        </div>
-      </div>
-      <div class="text">
-        <p class="user">AI</p>
-        <div class="response">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut eros
-          in massa tristique ultrices non quis erat. Nulla gravida dolor vitae
-          lectus gravida aliquet.
-        </div>
-      </div>
-      <div class="text">
-        <p class="user">You</p>
-        <div class="response">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut eros
-          in massa tristique ultrices non quis erat. Nulla gravida dolor vitae
-          lectus gravida aliquet.
-        </div>
-      </div>
-      <div class="text">
+      <div class="text ai">
         <p class="user">AI</p>
         <div class="response">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut eros
