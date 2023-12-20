@@ -5,4 +5,5 @@ export interface Recording {
   speakers: string[];
   date: string;
   preview?: string;
+  video: string;
 }

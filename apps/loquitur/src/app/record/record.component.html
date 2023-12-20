@@ -1,35 +1,31 @@
-@if (record$ | async; as record) {
+@if (recordQuery.isPending()) {
+<p>Loading...</p>
+} @if (recordQuery.error()) {
+<p>An error has occurred: {{ recordQuery.error() }}</p>
+} @if (recordQuery.data(); as record) {
 <mat-card>
   <mat-card-header>
     <mat-card-title-group>
       <mat-card-title>{{ record.name }} </mat-card-title>
-      <mat-card-subtitle
-        >{{ record.startTime | date : 'medium' }}
-      </mat-card-subtitle>
-      @if (record.playback.format.preview) {
-      <img
-        mat-card-sm-image
-        [src]="record.playback.format.preview.images.image[0]"
-      />
-      }
+      <mat-card-subtitle>{{ record | loquiHowLong }} </mat-card-subtitle>
     </mat-card-title-group>
   </mat-card-header>
   <mat-card-content>
-    <!-- <p><span>Duration:</span> {{ record | loquiHowLong }}</p> -->
-    <p><span>Participants:</span> {{ record.participants }}</p>
-    <p><span>Size:</span> {{ record.size * 0.000001 | number : '1.0-1' }}MB</p>
+    <p><span>Duration:</span> {{ record | loquiDuration }}</p>
+    <p><span>Speakers:</span> {{ record.speakers.length }}</p>
   </mat-card-content>
 </mat-card>
 <div class="video" #videoElm>
   <video
     controls
-    [src]="video"
+    [src]="baseUrl + record.video"
     (timeupdate)="timeUpdate($event)"
     (loadstart)="initVideo()"
   ></video>
 </div>
-@if (speakers$ | async; as speakers) { @if (whisper$ | async; as whisper) { @if
-(speakers.length && whisper) {
+<!-- @if (speakers$ | async; as speakers) {
+  @if (whisper$ | async; as whisper) {
+    @if(speakers.length && whisper) {
 <loqui-record-text
   (selectTime)="selectTime($event)"
   [whisper]="whisper"
@@ -39,6 +35,15 @@
 }
 <loqui-speakers
   [speakers]="speakers"
-  [record]="record.recordID"
+  [record]="record.id"
 ></loqui-speakers>
-} } }
+} } -->
+
+@if (textQuery.data(); as text) {
+<loqui-record-text
+  (selectTime)="selectTime($event)"
+  [whisper]="text"
+  [speakers]="record.speakers"
+  [time]="videoTime"
+></loqui-record-text>
+} }

@@ -21,10 +21,13 @@ export function getRecordings(): Recording[] {
         preview = `/public/${id}/${id}.webp`;
       }
 
+      const video = `/public/${id}/${id}.webm`;
+
       return {
         id,
         ...meta,
         preview,
+        video,
       };
     })
     .toSorted((a, b) => {

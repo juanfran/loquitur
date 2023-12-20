@@ -24,6 +24,14 @@ export class ApiService {
     return from(this.trpc.recordings.query());
   }
 
+  public getRecording(id: string) {
+    return from(this.trpc.recording.query(id));
+  }
+
+  public getText(id: string) {
+    return from(this.trpc.text.query(id));
+  }
+
   public uploadMedia(files: File[]) {
     const formData = new FormData();
 

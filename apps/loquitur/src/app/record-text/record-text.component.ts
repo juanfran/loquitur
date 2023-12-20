@@ -10,14 +10,14 @@ import {
 } from '@angular/core';
 import { Speaker } from '../models/speaker.model';
 import { Segment, Whisper } from '../models/whisper.model';
-
+import { WhisperResponse } from '@loquitur/commons';
 
 interface TextResult {
   id: number;
   text: Segment['text'];
   start: Segment['start'];
   end: Segment['end'];
-  speakers: string;
+  speaker: string;
 }
 
 @Component({
@@ -30,10 +30,10 @@ interface TextResult {
 })
 export class RecordTextComponent implements OnInit, OnChanges {
   @Input()
-  public speakers!: Speaker[];
+  public speakers!: string[];
 
   @Input()
-  public whisper!: Whisper;
+  public whisper!: WhisperResponse[];
 
   @Input()
   public time: number = 0;
@@ -50,40 +50,13 @@ export class RecordTextComponent implements OnInit, OnChanges {
   }
 
   public calculate() {
-    let lastSpeaker: string[] = [];
-
-    this.result = this.whisper.segments.map((segment) => {
-      let speakers = this.speakers
-        .filter((speaker) => {
-          const case1 =
-            speaker.start <= segment.start && speaker.end >= segment.end;
-          const case2 =
-            speaker.start <= segment.start &&
-            speaker.end <= segment.end &&
-            speaker.end >= segment.start;
-          const case3 =
-            speaker.start >= segment.start && speaker.end <= segment.end;
-
-          return case1 || case2 || case3;
-        })
-        .map((it) => it.speaker);
-
-      if (!speakers.length) {
-        speakers = lastSpeaker;
-
-        if (!speakers.length) {
-          speakers = [this.speakers[0].speaker];
-        }
-      }
-
-      lastSpeaker = [...speakers];
-
+    this.result = this.whisper.map((segment, index) => {
       return {
-        id: segment.id,
+        id: index,
         text: segment.text,
         start: segment.start,
         end: segment.end,
-        speakers: [...new Set(speakers)].join(', '),
+        speaker: segment.speaker,
       };
     });
   }
