@@ -4,7 +4,6 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  HostListener,
   Input,
   ViewChild,
   inject,
@@ -71,35 +70,6 @@ export class RecordComponent {
     },
   }));
 
-  @HostListener('window:scroll')
-  public onScroll() {
-    // const scollPosition = window.scrollY;
-    // if (this.videoElementRef) {
-    //   const videoWrapper = this.videoElementRef.nativeElement as HTMLElement;
-    //   const video = videoWrapper.querySelector<HTMLElement>('video');
-    //   if (video) {
-    //     const videoBottom = videoWrapper.getBoundingClientRect().bottom;
-    //     console.log(videoBottom);
-    //     const videoHeight = videoWrapper.getBoundingClientRect().height;
-    //     if (videoBottom <= 0 && !video.classList.contains('stuck')) {
-    //       video.classList.add('stuck');
-    //     } else {
-    //       video.classList.remove('stuck');
-    //     }
-    //   }
-    // }
-    // if (this.speakersWrapper) {
-    //   const speakersWrapper = this.speakersWrapper.nativeElement as HTMLElement;
-    //   const speakersPosition = speakersWrapper.getBoundingClientRect().top;
-    //   console.log(speakersPosition, scollPosition);
-    //   if (speakersPosition <= 10) {
-    //     speakersWrapper.classList.add('stuck');
-    //   } else {
-    //     speakersWrapper.classList.remove('stuck');
-    //   }
-    // }
-  }
-
   @ViewChild('videoElm') public videoElementRef!: ElementRef<HTMLElement>;
   @ViewChild('speakersWrapper')
   public speakersWrapper!: ElementRef<HTMLElement>;
@@ -135,7 +105,8 @@ export class RecordComponent {
     const video = videoWrapper.querySelector<HTMLVideoElement>('video');
 
     if (video) {
-      video.currentTime = time + 0.1;
+      video.currentTime = time;
+      video.play();
     }
   }
 
