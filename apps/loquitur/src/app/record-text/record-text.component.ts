@@ -8,17 +8,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { Speaker } from '../models/speaker.model';
-import { Segment, Whisper } from '../models/whisper.model';
 import { WhisperResponse } from '@loquitur/commons';
-
-interface TextResult {
-  id: number;
-  text: Segment['text'];
-  start: Segment['start'];
-  end: Segment['end'];
-  speaker: string;
-}
 
 @Component({
   selector: 'loqui-record-text',
@@ -41,44 +31,43 @@ export class RecordTextComponent implements OnInit, OnChanges {
   @Output()
   public selectTime = new EventEmitter<number>();
 
-  public result!: TextResult[];
-  public currentIndex = 0;
+  public currentEntryIndex = 0;
+  public currentWordIndex = 0;
 
   public ngOnInit() {
-    this.calculate();
     this.findCurrent();
   }
 
-  public calculate() {
-    this.result = this.whisper.map((segment, index) => {
-      return {
-        id: index,
-        text: segment.text,
-        start: segment.start,
-        end: segment.end,
-        speaker: segment.speaker,
-      };
-    });
-  }
-
   public findCurrent() {
-    this.currentIndex = this.result.findIndex((it) => {
+    this.currentEntryIndex = this.whisper.findIndex((it) => {
       return this.time >= it.start && this.time <= it.end;
     });
+
+    const entry = this.whisper[this.currentEntryIndex];
+    let newCurrentWordIndex = -1;
+
+    if (entry) {
+      newCurrentWordIndex = entry.words.findIndex((it) => {
+        return this.time >= it.start && this.time <= it.end;
+      });
+    }
+
+    if (newCurrentWordIndex !== -1) {
+      this.currentWordIndex = newCurrentWordIndex;
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['time'] && this.result) {
+    if (changes['time']) {
       this.findCurrent();
     }
 
     if (changes['speakers']) {
-      this.calculate();
       this.findCurrent();
     }
   }
 
-  public selectResult(text: TextResult) {
+  public selectResult(text: WhisperResponse) {
     this.selectTime.next(text.start);
   }
 }

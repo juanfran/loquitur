@@ -2,12 +2,16 @@
   display: block;
 }
 
-.text {
-
-}
-
-
-.current {
+.current-word {
   background-color: black;
   color: white;
+}
+
+.text {
+  border-inline-start: 3px solid transparent;
+  padding-inline-start: var(--size-2);
+}
+
+.current {
+  border-color: var(--blue-8);
 }

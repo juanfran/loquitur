@@ -1,13 +1,20 @@
-@for (entry of result; track entry; let i = $index) {
+@for (entry of whisper; track entry; let i = $index) {
 <div class="entry">
   <p
-    id="entry-{{ entry.id }}"
+    id="entry-{{ i }}"
     (click)="selectResult(entry)"
     class="text mat-headline-3"
-    [class.current]="i === currentIndex"
+    [class.current]="i === currentEntryIndex"
   >
-    {{ entry.speaker }}:
-    {{ entry.text }}
+    {{ entry.speaker }}: @for(wordEntry of entry.words; track wordEntry; let z =
+    $index) {
+    <span
+      class="word"
+      [class.current-word]="i === currentEntryIndex && z === currentWordIndex"
+    >
+      {{ wordEntry.word }}
+    </span>
+    }
   </p>
 </div>
 }
