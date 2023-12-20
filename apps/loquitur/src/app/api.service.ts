@@ -32,7 +32,7 @@ export class ApiService {
     });
 
     return this.http.post<unknown[]>(
-      `${this.appService.baseUrl}/upload`,
+      `${this.appService.baseUrl}upload`,
       formData
     );
   }

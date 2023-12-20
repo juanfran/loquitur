@@ -17,7 +17,7 @@ uploads = "uploads/"
 folder = uploads + audioId + "/"
 audio = folder + audioId + ".wav"
 video = folder + audioId + ".webm"
-frame_path = folder + audioId + ".jpg"
+frame_path = folder + audioId + ".webp"
 
 # speakers = folder + audioId + "-speakers.json"
 srt = folder + audioId + "-whisper.json"

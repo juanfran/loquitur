@@ -9,12 +9,13 @@ import { Speaker } from './models/speaker.model';
 import { Whisper } from './models/whisper.model';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import type { AppRouter } from '@loqui/api/app/router';
+import { environment } from './../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppService {
-  readonly baseUrl = 'http://localhost:3000';
+  readonly baseUrl = environment.apiURL;
 
   public recordings$ = new BehaviorSubject<Recording[]>([]);
   public whisper$ = new BehaviorSubject<Whisper | undefined>(undefined);
@@ -147,7 +148,7 @@ export class AppService {
     return createTRPCProxyClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: this.baseUrl + '/trpc',
+          url: this.baseUrl + 'trpc',
           fetch(url, options) {
             return fetch(url, {
               ...options,

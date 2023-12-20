@@ -2,9 +2,11 @@
   "name": "@loquitur/source",
   "version": "0.0.0",
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "start": "nx serve loquitur --port 4400",
-    "start:api": "nx serve api"
+    "start": "npm run generate:config && nx serve loquitur --port 4400",
+    "start:api": "nx serve api",
+    "generate:config": "node --env-file=.env ./apps/api/src/generate-enviorement.js"
   },
   "private": true,
   "dependencies": {
