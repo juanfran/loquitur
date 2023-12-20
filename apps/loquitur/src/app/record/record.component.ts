@@ -2,26 +2,29 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
   Input,
-  OnInit,
   ViewChild,
   inject,
   signal,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { lastValueFrom, map, take } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { AppService } from '../app.service';
-import { filterNil } from 'ngxtension/filter-nil';
 import { MatCardModule } from '@angular/material/card';
 import { RecordTextComponent } from '../record-text/record-text.component';
 import { SpeakersComponent } from '../speakers/speakers.component';
 import { CommonModule } from '@angular/common';
 import { HowLongPipe } from '../pipes/how-long.pipe';
 import { ApiService } from '../api.service';
-import { injectQuery } from '@tanstack/angular-query-experimental';
+import {
+  injectQuery,
+  injectQueryClient,
+} from '@tanstack/angular-query-experimental';
 import { DurationPipe } from '../pipes/duration.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'loqui-record',
@@ -38,17 +41,21 @@ import { DurationPipe } from '../pipes/duration.pipe';
     DurationPipe,
   ],
 })
-export class RecordComponent implements OnInit {
+export class RecordComponent {
   #apiService = inject(ApiService);
   #appService = inject(AppService);
+  #queryClient = injectQueryClient();
   #route = inject(ActivatedRoute);
   #id = signal<string>('');
   #cd = inject(ChangeDetectorRef);
+  #destroyRef = inject(DestroyRef);
   baseUrl = this.#appService.baseUrl;
 
   @Input({ required: true }) set id(value: string) {
     this.#id.set(value);
   }
+
+  @Input() segment?: string;
 
   recordQuery = injectQuery(() => ({
     enabled: this.#id().length > 0,
@@ -89,38 +96,24 @@ export class RecordComponent implements OnInit {
 
   @ViewChild('videoElm') public videoElementRef!: ElementRef;
 
-  public whisper$ = this.#appService.whisper$.asObservable();
-  public speakers$ = this.#appService.speakers$.asObservable();
   public videoTime: number = 0;
-  public segment$ = this.#route.queryParamMap.pipe(
-    map((params) => {
-      return params.get('segment') ?? '';
-    })
-  );
-
-  public ngOnInit(): void {
-    // todo
-    this.#appService.getText(this.#id());
-  }
 
   public initVideo() {
-    // todo
-    if (this.#route.snapshot.queryParams['segment']) {
-      const segment = Number(this.#route.snapshot.queryParams['segment']);
+    const text = this.textQuery.data();
 
-      this.whisper$.pipe(filterNil(), take(1)).subscribe((whisper) => {
-        const whisperSegment = whisper.segments.find((it) => it.id === segment);
+    if (!this.segment || !text) {
+      return;
+    }
 
-        if (whisperSegment) {
-          this.selectTime(whisperSegment.start);
-          this.#cd.detectChanges();
+    const segment = Number(this.segment);
+    const whisperSegment = text[segment];
 
-          requestAnimationFrame(() => {
-            document
-              .querySelector(`#entry-${whisperSegment.id}`)
-              ?.scrollIntoView();
-          });
-        }
+    if (whisperSegment) {
+      this.selectTime(whisperSegment.start);
+      this.#cd.detectChanges();
+
+      requestAnimationFrame(() => {
+        document.querySelector(`#entry-${segment}`)?.scrollIntoView();
       });
     }
   }
@@ -145,6 +138,14 @@ export class RecordComponent implements OnInit {
     oldName: string;
     newName: string;
   }) {
-    this.#apiService.setName(this.#id(), oldName, newName).subscribe();
+    this.#apiService
+      .setName(this.#id(), oldName, newName)
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => {
+        this.#queryClient.invalidateQueries({
+          queryKey: ['record', this.#id()],
+        });
+        this.#queryClient.invalidateQueries({ queryKey: ['text', this.#id()] });
+      });
   }
 }
