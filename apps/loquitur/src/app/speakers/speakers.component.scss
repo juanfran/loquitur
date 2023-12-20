@@ -3,13 +3,13 @@
 }
 
 mat-card-header {
-  margin-bottom: 1rem;
+  margin-block-end: var(--size-4);
 }
 
 .speaker {
   display: flex;
   justify-content: space-between;
-  margin-bottom: .5rem;;
+  margin-block-end: var(--size-2);
 }
 
 .name {
@@ -20,4 +20,9 @@ form {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  gap: var(--size-2);
+}
+
+mat-form-field  {
+  inline-size: 100%;
 }

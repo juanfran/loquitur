@@ -99,10 +99,12 @@ export class RecordComponent implements OnInit {
   );
 
   public ngOnInit(): void {
+    // todo
     this.#appService.getText(this.#id());
   }
 
   public initVideo() {
+    // todo
     if (this.#route.snapshot.queryParams['segment']) {
       const segment = Number(this.#route.snapshot.queryParams['segment']);
 
@@ -134,5 +136,15 @@ export class RecordComponent implements OnInit {
     if (video) {
       video.currentTime = time + 0.1;
     }
+  }
+
+  public setNewName({
+    oldName,
+    newName,
+  }: {
+    oldName: string;
+    newName: string;
+  }) {
+    this.#apiService.setName(this.#id(), oldName, newName).subscribe();
   }
 }

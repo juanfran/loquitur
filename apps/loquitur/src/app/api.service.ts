@@ -32,6 +32,10 @@ export class ApiService {
     return from(this.trpc.text.query(id));
   }
 
+  public setName(id: string, oldName: string, name: string) {
+    return from(this.trpc.setName.mutate({ id, oldName, name }));
+  }
+
   public uploadMedia(files: File[]) {
     const formData = new FormData();
 

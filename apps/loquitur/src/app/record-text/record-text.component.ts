@@ -19,10 +19,7 @@ import { WhisperResponse } from '@loquitur/commons';
   imports: [],
 })
 export class RecordTextComponent implements OnInit, OnChanges {
-  @Input()
-  public speakers!: string[];
-
-  @Input()
+  @Input({ required: true })
   public whisper!: WhisperResponse[];
 
   @Input()
@@ -59,10 +56,6 @@ export class RecordTextComponent implements OnInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['time']) {
-      this.findCurrent();
-    }
-
-    if (changes['speakers']) {
       this.findCurrent();
     }
   }

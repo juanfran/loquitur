@@ -1,8 +1,9 @@
-import { initTRPC } from '@trpc/server';
+import { TRPCError, initTRPC } from '@trpc/server';
 import { z } from 'zod';
 import { setConfig, getConfig } from './db';
 import { getRecordings } from './utils/get-recordings';
 import { getText } from './utils/get-text';
+import { setName } from './utils/set-name';
 
 export const t = initTRPC.create();
 
@@ -21,6 +22,27 @@ export const trpcRouter = t.router({
   getConfig: t.procedure.query(() => {
     return getConfig();
   }),
+  setName: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        oldName: z.string(),
+        name: z.string(),
+      })
+    )
+    .mutation(async (opts) => {
+      const result = setName(
+        opts.input.id,
+        opts.input.oldName,
+        opts.input.name
+      );
+
+      if (!result) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      return result;
+    }),
   setConfig: t.procedure
     .input(
       z.object({

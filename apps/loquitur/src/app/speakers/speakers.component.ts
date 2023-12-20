@@ -2,18 +2,22 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   Input,
   OnChanges,
+  Output,
+  inject,
+  signal,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { AppService } from '../app.service';
-import { Recording } from '../models/recordings.model';
-import { Speaker } from '../models/speaker.model';
-
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { WhisperResponse } from '@loquitur/commons';
+import { formatDuration } from 'date-fns';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 interface SpeakerInfo {
   name: string;
@@ -28,56 +32,62 @@ interface SpeakerInfo {
   standalone: true,
   imports: [
     MatCardModule,
+    MatInputModule,
     MatFormFieldModule,
     MatIconModule,
-    ReactiveFormsModule
-],
+    MatButtonModule,
+    ReactiveFormsModule,
+  ],
 })
 export class SpeakersComponent implements OnChanges {
+  el = inject(ElementRef);
+
   @HostListener('document:keydown.escape', ['$event'])
   public onKeydownHandler(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      this.edit = -1;
+      this.edit.set(-1);
     }
   }
 
-  @Input()
-  public record!: Recording['recordID'];
+  @Input({ required: true })
+  whisper!: WhisperResponse[];
 
-  @Input()
-  public speakers!: Speaker[];
+  @Output()
+  newName = new EventEmitter<{
+    oldName: string;
+    newName: string;
+  }>();
 
-  public renderList: SpeakerInfo[] = [];
-  public edit: number = -1;
-  public form = new FormControl();
+  renderList: SpeakerInfo[] = [];
+  edit = signal(-1);
+  form = new FormControl();
 
-  constructor(public appService: AppService, public el: ElementRef) {}
+  generateList() {
+    const speakers = {} as Record<string, number>;
+    this.whisper.forEach((entry) => {
+      if (!speakers[entry.speaker]) {
+        speakers[entry.speaker] = 0;
+      }
 
-  public generateList() {
-    const speakersList = new Set(
-      this.speakers.map((speaker) => speaker.speaker)
-    );
-
-    this.renderList = [...speakersList].map((speaker) => {
-      const time = this.speakers.reduce((prev, cur) => {
-        if (cur.speaker === speaker) {
-          return prev + cur.start + cur.end;
-        }
-
-        return prev;
-      }, 0);
-
-      return {
-        name: speaker,
-        time: this.appService.getMinutes(time * 10),
-      };
+      speakers[entry.speaker] += entry.end - entry.start;
     });
 
-    this.renderList.sort((a, b) => (a.name > b.name ? 1 : -1));
+    this.renderList = Object.entries(speakers)
+      .map(([name, time]) => {
+        return {
+          name,
+          time: formatDuration({
+            seconds: Math.round(time),
+          }),
+        };
+      })
+      .toSorted((a, b) => {
+        return a.name > b.name ? 1 : -1;
+      });
   }
 
-  public openForm(index: number) {
-    this.edit = index;
+  openForm(index: number) {
+    this.edit.set(index);
 
     this.form.setValue(this.renderList[index].name);
 
@@ -86,11 +96,15 @@ export class SpeakersComponent implements OnChanges {
     });
   }
 
-  public submit() {
-    const oldName = this.renderList[this.edit].name;
+  submit() {
+    const oldName = this.renderList[this.edit()].name;
 
-    this.appService.editSpeaker(this.record, oldName, this.form.value);
-    this.edit = -1;
+    this.newName.emit({
+      oldName,
+      newName: this.form.value,
+    });
+
+    this.edit.set(-1);
   }
 
   public ngOnChanges() {

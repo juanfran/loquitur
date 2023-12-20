@@ -4,27 +4,27 @@
   </mat-card-header>
   <mat-card-content>
     @for (speaker of renderList; track speaker; let i = $index) {
-      <div class="speaker">
-        @if (edit === i) {
-          <form (submit)="submit()">
-            <mat-form-field appearance="fill">
-              <mat-label>Speaker name</mat-label>
-              <input matInput [formControl]="form">
-            </mat-form-field>
-            <button
-              type="submit"
-              mat-icon-button
-              color="primary"
-              aria-label="Submit">
-              <mat-icon>check</mat-icon>
-            </button>
-          </form>
-        }
-        @if (edit !== i) {
-          <div class="name" (click)="openForm(i)">{{ speaker.name }}</div>
-          <div class="time">{{ speaker.time }}</div>
-        }
-      </div>
+    <div class="speaker">
+      @if (edit() === i) {
+      <form (submit)="submit()">
+        <mat-form-field appearance="fill">
+          <mat-label>Speaker name</mat-label>
+          <input matInput [formControl]="form" />
+        </mat-form-field>
+        <button
+          type="submit"
+          mat-icon-button
+          color="primary"
+          aria-label="Submit"
+        >
+          <mat-icon>check</mat-icon>
+        </button>
+      </form>
+      } @if (edit() !== i) {
+      <div class="name" (click)="openForm(i)">{{ speaker.name }}</div>
+      <div class="time">{{ speaker.time }}</div>
+      }
+    </div>
     }
   </mat-card-content>
 </mat-card>

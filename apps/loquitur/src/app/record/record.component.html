@@ -23,27 +23,16 @@
     (loadstart)="initVideo()"
   ></video>
 </div>
-<!-- @if (speakers$ | async; as speakers) {
-  @if (whisper$ | async; as whisper) {
-    @if(speakers.length && whisper) {
-<loqui-record-text
-  (selectTime)="selectTime($event)"
-  [whisper]="whisper"
-  [speakers]="speakers"
-  [time]="videoTime"
-></loqui-record-text>
-}
-<loqui-speakers
-  [speakers]="speakers"
-  [record]="record.id"
-></loqui-speakers>
-} } -->
 
 @if (textQuery.data(); as text) {
 <loqui-record-text
   (selectTime)="selectTime($event)"
   [whisper]="text"
-  [speakers]="record.speakers"
   [time]="videoTime"
 ></loqui-record-text>
+
+<loqui-speakers
+  [whisper]="text"
+  (newName)="setNewName($event)"
+></loqui-speakers>
 } }
