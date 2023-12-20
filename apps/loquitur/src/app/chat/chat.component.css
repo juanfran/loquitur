@@ -1,0 +1,36 @@
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3);
+}
+
+.text {
+  color: var(--gray-12);
+
+  p {
+    margin: 0;
+    margin-block-end: var(--size-2);
+  }
+}
+
+.user {
+  font-weight: var(--font-weight-9);
+}
+
+.new-message {
+  display: flex;
+  gap: var(--size-3);
+  inline-size: 100%;
+
+  input {
+    inline-size: 100%;
+    padding: var(--size-2);
+    border-radius: var(--radius-2);
+    border: 0;
+    box-shadow: var(--shadow-2);
+
+    &:focus {
+      outline-color: var(--gray-6);
+    }
+  }
+}

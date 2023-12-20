@@ -38,6 +38,12 @@
 
   @if (textQuery.data(); as text) {
   <div class="speakers-wrapper" #speakersWrapper>
+    <div class="chat">
+      <button mat-mini-fab color="primary" (click)="openChat()">
+        <mat-icon>chat</mat-icon>
+      </button>
+    </div>
+
     <loqui-speakers
       [whisper]="text"
       (newName)="setNewName($event)"

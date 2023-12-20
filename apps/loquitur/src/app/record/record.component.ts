@@ -23,6 +23,10 @@ import {
 } from '@tanstack/angular-query-experimental';
 import { DurationPipe } from '../pipes/duration.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ChatComponent } from '../chat/chat.component';
 
 @Component({
   selector: 'loqui-record',
@@ -37,6 +41,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     SpeakersComponent,
     HowLongPipe,
     DurationPipe,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
 })
 export class RecordComponent {
@@ -46,6 +53,7 @@ export class RecordComponent {
   #id = signal<string>('');
   #cd = inject(ChangeDetectorRef);
   #destroyRef = inject(DestroyRef);
+  #dialog = inject(MatDialog);
   baseUrl = this.#appService.baseUrl;
 
   @Input({ required: true }) set id(value: string) {
@@ -70,13 +78,13 @@ export class RecordComponent {
     },
   }));
 
-  @ViewChild('videoElm') public videoElementRef!: ElementRef<HTMLElement>;
+  @ViewChild('videoElm') videoElementRef!: ElementRef<HTMLElement>;
   @ViewChild('speakersWrapper')
-  public speakersWrapper!: ElementRef<HTMLElement>;
+  speakersWrapper!: ElementRef<HTMLElement>;
 
-  public videoTime: number = 0;
+  videoTime: number = 0;
 
-  public initVideo() {
+  initVideo() {
     const text = this.textQuery.data();
 
     if (!this.segment || !text) {
@@ -96,11 +104,17 @@ export class RecordComponent {
     }
   }
 
-  public timeUpdate(event: Event) {
+  openChat() {
+    this.#dialog.open(ChatComponent, {
+      width: '800px',
+    });
+  }
+
+  timeUpdate(event: Event) {
     this.videoTime = (event.target as HTMLVideoElement).currentTime;
   }
 
-  public selectTime(time: number) {
+  selectTime(time: number) {
     const videoWrapper = this.videoElementRef.nativeElement as HTMLElement;
     const video = videoWrapper.querySelector<HTMLVideoElement>('video');
 
@@ -110,13 +124,7 @@ export class RecordComponent {
     }
   }
 
-  public setNewName({
-    oldName,
-    newName,
-  }: {
-    oldName: string;
-    newName: string;
-  }) {
+  setNewName({ oldName, newName }: { oldName: string; newName: string }) {
     this.#apiService
       .setName(this.#id(), oldName, newName)
       .pipe(takeUntilDestroyed(this.#destroyRef))
