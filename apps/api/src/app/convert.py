@@ -22,10 +22,12 @@ frame_path = folder + audioId + ".webp"
 # speakers = folder + audioId + "-speakers.json"
 srt = folder + audioId + "-whisper.json"
 
-# file to > wav
+# file to > wav & webm
 clip = moviepy.VideoFileClip(source)
-clip.write_videofile(video,fps=25)
 clip.audio.write_audiofile(audio)
+
+if not os.path.isfile(video):
+  clip.write_videofile(video,fps=25)
 
 frame = clip.get_frame(int(clip.duration) / 2)
 image = Image.fromarray(frame)

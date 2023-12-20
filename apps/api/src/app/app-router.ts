@@ -7,6 +7,8 @@ import fs from 'fs';
 import { v4 } from 'uuid';
 import { runPython } from './utils/run-python';
 import { readJSONFile } from './utils/read-json-file';
+import { getText } from './utils/get-text';
+import { fuse } from './utils/search';
 
 function wait() {
   return new Promise((resolve) => {
@@ -53,7 +55,19 @@ export async function appRouter(fastify: FastifyInstance) {
           date: new Date().toISOString(),
         };
 
+        // add to search
         fs.writeFileSync(metadataPath, JSON.stringify(metadata));
+
+        const textFile = getText(id);
+
+        textFile.forEach((it, index) => {
+          fuse.add({
+            id: id,
+            name: fileName,
+            text: it.text,
+            segment: index,
+          });
+        });
       }
     }
 

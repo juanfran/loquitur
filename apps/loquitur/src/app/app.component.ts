@@ -9,6 +9,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AppStore } from './app.store';
 import { AddMediaComponent } from './add-media/add-media.component';
+import { SearchComponent } from './search/search.component';
 
 @Component({
   standalone: true,
@@ -44,6 +45,12 @@ export class AppComponent implements OnInit {
       queryParams: {
         query: this.form.value,
       },
+    });
+  }
+
+  public openSearch() {
+    this.dialog.open(SearchComponent, {
+      width: '650px',
     });
   }
 

@@ -1,11 +1,18 @@
-@for (search of result(); track $index) {
-<div class="search">
-  <a
-    mat-button
-    [routerLink]="['/record', search.record]"
-    [queryParams]="{ segment: search.segment }"
-    >{{ search.text }}</a
-  >
-  <mat-divider></mat-divider>
-</div>
-}
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input matInput [formControl]="search" />
+  </mat-form-field>
+
+  @for (search of result(); track $index) {
+  <div class="search">
+    <a
+      mat-button
+      [routerLink]="['/record', search.item.id]"
+      [queryParams]="{ segment: search.item.segment }"
+      >{{ search.item.text }}</a
+    >
+    <mat-divider></mat-divider>
+  </div>
+  }
+</mat-dialog-content>

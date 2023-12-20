@@ -9,13 +9,13 @@ export function runPython(filePath: string, id: string) {
       process.env.HF_TOKEN,
     ]);
 
-    // pyProg.stderr.on('data', (data) => {
-    //   console.error(data.toString());
-    // });
+    pyProg.stderr.on('data', (data) => {
+      console.error(data.toString());
+    });
 
-    // pyProg.stdin.on('data', (data) => {
-    //   console.log(data.toString());
-    // });
+    pyProg.stdin.on('data', (data) => {
+      console.log(data.toString());
+    });
 
     pyProg.on('exit', () => {
       resolve(null);

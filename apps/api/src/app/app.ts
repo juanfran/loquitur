@@ -9,12 +9,21 @@ import fastifyStatic from '@fastify/static';
 import { createContext } from './context';
 import { trpcRouter } from './router';
 import { appRouter } from './app-router';
+import { fuse } from './utils/search';
+import { getTexts } from './utils/get-texts';
 
 // import ws from '@fastify/websocket';
 
 export interface AppOptions {}
 
+function initSeachDb() {
+  const texts = getTexts();
+
+  fuse.setCollection(texts);
+}
+
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
+  initSeachDb();
   // fastify.register(ws);
 
   fastify.register(fastifyStatic, {

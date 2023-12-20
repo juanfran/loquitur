@@ -5,12 +5,11 @@
     </a>
   </div>
   <span class="spacer"></span>
-  <form (submit)="submit()">
-    <div class="search">
-      <input type="text" [formControl]="form" />
-      <mat-icon color="primary">search</mat-icon>
-    </div>
-  </form>
+  <div class="search">
+    <button mat-mini-fab color="basic" (click)="openSearch()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
 
   <div class="settings">
     <button mat-mini-fab color="basic" (click)="openSettings()">

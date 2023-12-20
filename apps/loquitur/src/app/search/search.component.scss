@@ -1,4 +1,15 @@
 .search a {
-  text-align: left;
-  width: 100%;
+  color: var(--gray-10);
+  text-decoration: none;
+  display: block;
+  padding-inline: var(--size-4);
+  padding-block: var(--size-2);
+
+  &:hover {
+    background-color: var(--gray-2);
+  }
+}
+
+mat-form-field {
+  inline-size: 100%;
 }

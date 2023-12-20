@@ -4,6 +4,8 @@ import { setConfig, getConfig } from './db';
 import { getRecordings } from './utils/get-recordings';
 import { getText } from './utils/get-text';
 import { setName } from './utils/set-name';
+import { fuse } from './utils/search';
+import { SearchResult } from '@loquitur/commons';
 
 export const t = initTRPC.create();
 
@@ -21,6 +23,15 @@ export const trpcRouter = t.router({
   }),
   getConfig: t.procedure.query(() => {
     return getConfig();
+  }),
+  search: t.procedure.input(z.string()).query(({ input }) => {
+    console.log(input);
+
+    const result = fuse.search<SearchResult>(input);
+
+    console.log(result);
+
+    return result;
   }),
   setName: t.procedure
     .input(

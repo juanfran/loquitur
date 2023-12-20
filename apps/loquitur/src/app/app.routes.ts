@@ -3,7 +3,6 @@ import { Route } from '@angular/router';
 export const appRoutes: Route[] = [
   {
     path: '',
-
     loadComponent: () =>
       import('./recordings/recordings.component').then(
         (m) => m.RecordingsComponent
@@ -13,10 +12,5 @@ export const appRoutes: Route[] = [
     path: 'record/:id',
     loadComponent: () =>
       import('./record/record.component').then((m) => m.RecordComponent),
-  },
-  {
-    path: 'search',
-    loadComponent: () =>
-      import('./search/search.component').then((m) => m.SearchComponent),
   },
 ];
