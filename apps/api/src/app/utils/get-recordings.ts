@@ -8,22 +8,26 @@ export function getRecordings(): Recording[] {
     fs.statSync('uploads/' + file).isDirectory()
   );
 
-  return ids.map((id) => {
-    const meta = JSON.parse(
-      fs.readFileSync(`uploads/${id}/metadata.json`, 'utf8')
-    );
+  return ids
+    .map((id) => {
+      const meta = JSON.parse(
+        fs.readFileSync(`uploads/${id}/metadata.json`, 'utf8')
+      );
 
-    const imagePath = `uploads/${id}/${id}.webp`;
-    let preview = '';
+      const imagePath = `uploads/${id}/${id}.webp`;
+      let preview = '';
 
-    if (fs.existsSync(imagePath)) {
-      preview = `/public/${id}/${id}.webp`;
-    }
+      if (fs.existsSync(imagePath)) {
+        preview = `/public/${id}/${id}.webp`;
+      }
 
-    return {
-      id,
-      ...meta,
-      preview,
-    };
-  });
+      return {
+        id,
+        ...meta,
+        preview,
+      };
+    })
+    .toSorted((a, b) => {
+      return a.date > b.date ? -1 : 1;
+    });
 }
