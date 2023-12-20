@@ -15,13 +15,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { WhisperResponse } from '@loquitur/commons';
-import { formatDuration } from 'date-fns';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { DurationPipe } from '../pipes/duration.pipe';
 
 interface SpeakerInfo {
   name: string;
-  time: string;
+  time: number;
 }
 
 @Component({
@@ -37,6 +37,7 @@ interface SpeakerInfo {
     MatIconModule,
     MatButtonModule,
     ReactiveFormsModule,
+    DurationPipe,
   ],
 })
 export class SpeakersComponent implements OnChanges {
@@ -76,9 +77,7 @@ export class SpeakersComponent implements OnChanges {
       .map(([name, time]) => {
         return {
           name,
-          time: formatDuration({
-            seconds: Math.round(time),
-          }),
+          time: Math.round(time),
         };
       })
       .toSorted((a, b) => {

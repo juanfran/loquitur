@@ -22,7 +22,7 @@
       </form>
       } @if (edit() !== i) {
       <div class="name" (click)="openForm(i)">{{ speaker.name }}</div>
-      <div class="time">{{ speaker.time }}</div>
+      <div class="time">{{ speaker.time | loquiDuration }}</div>
       }
     </div>
     }
