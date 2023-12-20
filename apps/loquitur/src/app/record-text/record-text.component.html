@@ -2,14 +2,14 @@
 <div class="entry">
   <p
     id="entry-{{ i }}"
-    (click)="selectResult(entry)"
     class="text mat-headline-3"
     [class.current]="i === currentEntryIndex"
   >
-    {{ entry.speaker }}: @for(wordEntry of entry.words; track wordEntry; let z =
-    $index) {
+    <span (click)="selectResult(entry.start)">{{ entry.speaker }}:</span>
+    @for(wordEntry of entry.words; track wordEntry; let z = $index) {
     <span
       class="word"
+      (click)="selectResult(wordEntry.start)"
       [class.current-word]="i === currentEntryIndex && z === currentWordIndex"
     >
       {{ wordEntry.word }}

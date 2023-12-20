@@ -60,7 +60,7 @@ export class RecordTextComponent implements OnInit, OnChanges {
     }
   }
 
-  public selectResult(text: WhisperResponse) {
-    this.selectTime.next(text.start);
+  public selectResult(time: number) {
+    this.selectTime.next(time);
   }
 }
