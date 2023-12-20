@@ -1,13 +1,3 @@
-<mat-button-toggle-group
-  value="all"
-  name="filterType"
-  aria-label="Filter type"
-  (change)="newType($event)"
->
-  <mat-button-toggle value="all">All</mat-button-toggle>
-  <mat-button-toggle value="done">Ready</mat-button-toggle>
-</mat-button-toggle-group>
-
 @for (record of recordings(); track record.id) {
 <mat-card class="card">
   <mat-card-header>
@@ -25,17 +15,6 @@
     <mat-divider></mat-divider>
   </mat-card-content>
   <mat-card-actions>
-    <!-- <a target="_blank" [href]="record.playback.format.url" mat-button
-        >Go to BBB</a
-        > -->
-    <!-- @if (record.appState === 'none') {
-          <button (click)="initFetch(record.recordID)" mat-button>Fetch</button>
-        }
-        @if (record.appState === 'inprogress') {
-          <mat-spinner [diameter]="25"></mat-spinner>
-        } -->
-    <!-- @if (record.appState === 'done') {
-        } -->
     <a mat-button [routerLink]="['record', record.id]">Detail</a>
   </mat-card-actions>
 </mat-card>

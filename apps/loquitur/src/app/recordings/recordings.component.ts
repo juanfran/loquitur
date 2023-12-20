@@ -1,10 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Recording } from '../models/recordings.model';
 import { AppService } from '../app.service';
-import {
-  MatButtonToggleChange,
-  MatButtonToggleModule,
-} from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { HowLongPipe } from '../pipes/how-long.pipe';
@@ -25,7 +20,6 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     RouterModule,
     MatButtonModule,
-    MatButtonToggleModule,
     MatCardModule,
     MatDividerModule,
     HowLongPipe,
@@ -39,32 +33,4 @@ export class RecordingsComponent {
 
   recordings = this.#recordingsStore.recordings;
   baseUrl = this.#appService.baseUrl;
-
-  // public recordingType$ = new BehaviorSubject('all');
-  // public recordings$ = combineLatest([
-  //   this.appService.recordings$.asObservable(),
-  //   this.recordingType$,
-  // ]).pipe(
-  //   map(([recordings, filter]) => {
-  //     return recordings.filter((record) => {
-  //       if (filter === 'all') {
-  //         return true;
-  //       }
-
-  //       return record.appState === filter;
-  //     });
-  //   })
-  // );
-
-  // constructor(private appService: AppService) {
-  //   this.appService.initRecordings();
-  // }
-
-  public initFetch(recordID: Recording['recordID']) {
-    // this.appService.initFetch(recordID).subscribe();
-  }
-
-  public newType(event: MatButtonToggleChange) {
-    // this.recordingType$.next(event.value);
-  }
 }

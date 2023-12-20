@@ -2,8 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { Recording } from './models/recordings.model';
-import { SearchResult } from './models/search-result.model';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import type { AppRouter } from '@loqui/api/app/router';
 import { environment } from './../environments/environment';
@@ -20,14 +18,6 @@ export class AppService {
     private router: Router
   ) {
     this.wsListen();
-  }
-
-  public search(term: string) {
-    return this.http.get<SearchResult[]>(`http://localhost:8080/api/search`, {
-      params: {
-        term,
-      },
-    });
   }
 
   public wsListen() {
