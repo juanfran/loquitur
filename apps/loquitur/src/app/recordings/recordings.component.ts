@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
 import { RecordingsStore } from './recordings.store';
+import { DurationPipe } from '../pipes/duration.pipe';
 
 @Component({
   selector: 'loqui-recordings',
@@ -28,6 +29,7 @@ import { RecordingsStore } from './recordings.store';
     MatDividerModule,
     HowLongPipe,
     MatProgressSpinnerModule,
+    DurationPipe,
   ],
 })
 export class RecordingsComponent {
