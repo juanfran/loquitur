@@ -148,7 +148,7 @@ export class AppService {
     return createTRPCProxyClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: this.baseUrl + 'trpc',
+          url: this.baseUrl + '/trpc',
           fetch(url, options) {
             return fetch(url, {
               ...options,

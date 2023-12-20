@@ -3,8 +3,8 @@
   position: relative;
 }
 
-img[mat-card-sm-image] {
-  height: auto;
+img {
+  inline-size: 80px;
 }
 
 mat-card {

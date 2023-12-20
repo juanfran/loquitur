@@ -29,6 +29,12 @@ clip.audio.write_audiofile(audio)
 
 frame = clip.get_frame(int(clip.duration) / 2)
 image = Image.fromarray(frame)
+
+image_size = 150
+
+scale = image_size / image.size[0]
+height = int(image.size[1] * scale)
+image = image.resize((image_size, height))
 image.save(frame_path)
 
 os.remove(source)

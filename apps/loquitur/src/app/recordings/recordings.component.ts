@@ -36,8 +36,10 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class RecordingsComponent {
   #recordingsStore = inject(RecordingsStore);
+  #appService = inject(AppService);
 
   recordings = this.#recordingsStore.recordings;
+  baseUrl = this.#appService.baseUrl;
 
   // public recordingType$ = new BehaviorSubject('all');
   // public recordings$ = combineLatest([

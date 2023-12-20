@@ -3,18 +3,24 @@ import { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import multipart from '@fastify/multipart';
-
 import AutoLoad from '@fastify/autoload';
+import fastifyStatic from '@fastify/static';
 
 import { createContext } from './context';
 import { trpcRouter } from './router';
 import { appRouter } from './app-router';
+
 // import ws from '@fastify/websocket';
 
 export interface AppOptions {}
 
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
   // fastify.register(ws);
+
+  fastify.register(fastifyStatic, {
+    root: path.join(__dirname, '../../../../../../../uploads/'),
+    prefix: '/public/',
+  });
 
   fastify.register(multipart, {
     limits: {

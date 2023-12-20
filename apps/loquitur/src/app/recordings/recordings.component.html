@@ -14,12 +14,9 @@
     <mat-card-title-group>
       <mat-card-title>{{ record.name }} </mat-card-title>
       <mat-card-subtitle>{{ record | loquiHowLong }} </mat-card-subtitle>
-      <!-- @if (record.preview) {
-          <img
-            mat-card-sm-image
-            [src]="record.playback.format.preview.images.image[0]"
-            />
-        } -->
+      @if (record.preview) {
+      <img [src]="baseUrl + record.preview" />
+      }
     </mat-card-title-group>
   </mat-card-header>
   <mat-card-content>

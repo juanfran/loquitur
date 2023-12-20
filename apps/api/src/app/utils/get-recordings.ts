@@ -1,6 +1,7 @@
+import { Recording } from '@loquitur/commons';
 import fs from 'fs';
 
-export function getRecordings() {
+export function getRecordings(): Recording[] {
   const files = fs.readdirSync('uploads');
 
   const ids = files.filter((file) =>
@@ -12,12 +13,17 @@ export function getRecordings() {
       fs.readFileSync(`uploads/${id}/metadata.json`, 'utf8')
     );
 
-    const imagePath = `uploads/${id}.jpg`;
-    let image = '';
+    const imagePath = `uploads/${id}/${id}.webp`;
+    let preview = '';
+
+    if (fs.existsSync(imagePath)) {
+      preview = `/public/${id}/${id}.webp`;
+    }
 
     return {
       id,
       ...meta,
+      preview,
     };
   });
 }
