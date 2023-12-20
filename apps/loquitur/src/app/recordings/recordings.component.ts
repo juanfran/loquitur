@@ -14,6 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
 import { RecordingsStore } from './recordings.store';
 import { DurationPipe } from '../pipes/duration.pipe';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'loqui-recordings',
@@ -24,6 +25,7 @@ import { DurationPipe } from '../pipes/duration.pipe';
   imports: [
     CommonModule,
     RouterModule,
+    MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
     MatDividerModule,
