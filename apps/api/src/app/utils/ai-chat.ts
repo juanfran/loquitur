@@ -15,7 +15,7 @@ async function* streamAsyncIterator(stream) {
   reader.releaseLock();
 }
 
-export function chat(event: ChatEvent): Observable<ChatResponse> {
+export function chat(id: string, event: ChatEvent): Observable<ChatResponse> {
   return new Observable((observer) => {
     getConfig().then((config) => {
       if (!config.chatApi) {
@@ -28,7 +28,7 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
         return `${it.speaker}: ${it.text}`;
       });
 
-      const current = chats.get(recordingId) ?? [
+      const current = chats.get(id) ?? [
         {
           role: 'system',
           content: `You are an assistant. You must answer questions about this conversation: \n ${text.join(
@@ -43,7 +43,7 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
         },
       ];
 
-      chats.set(recordingId, [
+      chats.set(id, [
         ...current,
         {
           role: 'user',
@@ -51,7 +51,8 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
         },
       ]);
 
-      // console.log(chats.get(recordingId));
+      // console.log(chats.keys());
+      // console.log(chats.get(id));
 
       fetch(config.chatApi + 'chat', {
         method: 'POST',
@@ -60,7 +61,7 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
         },
         body: JSON.stringify({
           model: 'mistral',
-          messages: chats.get(recordingId),
+          messages: chats.get(id),
         }),
       }).then(async (response) => {
         const messanges: ChatResponse[] = [];
@@ -81,10 +82,7 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
               })
               .join('');
 
-            chats.set(recordingId, [
-              ...current,
-              { role: 'assistant', content },
-            ]);
+            chats.set(id, [...chats.get(id), { role: 'assistant', content }]);
           }
         }
       });

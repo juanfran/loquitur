@@ -4,4 +4,9 @@ export interface ChatEvent {
   recordingId: string;
 }
 
-export type WsEvent = ChatEvent;
+export interface InitChatEvent {
+  type: 'init-chat';
+  recordingId: string;
+}
+
+export type WsEvent = ChatEvent | InitChatEvent;

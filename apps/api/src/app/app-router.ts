@@ -78,18 +78,24 @@ export async function appRouter(fastify: FastifyInstance) {
   });
 
   fastify.get('/ws', { websocket: true }, (connection) => {
+    const id = v4();
+
     connection.socket.on('message', (message: string) => {
       const data = JSON.parse(message) as WsEvent;
 
+      // console.log(data);
+
       if (data.type === 'chat') {
-        chat(data).subscribe((it) => {
+        chat(id, data).subscribe((it) => {
           connection.socket.send(JSON.stringify(it));
         });
+      } else if (data.type === 'init-chat') {
+        chats.delete(id);
       }
     });
 
     connection.socket.on('close', () => {
-      chats.clear();
+      chats.delete(id);
     });
   });
 }

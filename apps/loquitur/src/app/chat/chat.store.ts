@@ -1,11 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { ChatEvent, ChatResponse } from '@loquitur/commons';
+import { ChatEvent, ChatResponse, InitChatEvent } from '@loquitur/commons';
 import { rxState } from '@rx-angular/state';
 
 import { rxActions } from '@rx-angular/state/actions';
-import { mergeMap, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { AppService } from '../app.service';
-import { ApiService } from '../api.service';
 
 interface ChatState {
   loading: boolean;
@@ -24,7 +23,6 @@ const initialState: ChatState = {
 })
 export class ChatStore {
   #appService = inject(AppService);
-  #apiService = inject(ApiService);
 
   actions = rxActions<{
     message: Pick<ChatEvent, 'message' | 'recordingId'>;
@@ -75,17 +73,14 @@ export class ChatStore {
     );
   });
 
-  #destroy$ = this.actions.onDestroy((destroy$) => {
-    return destroy$.pipe(
-      mergeMap((recordingId) => {
-        return this.#apiService.deleteChat(recordingId);
-      })
-    );
-  });
-
   #setRecording$ = this.actions.onRecording((recording$) => {
     return recording$.pipe(
       tap((recordingId) => {
+        this.#appService.sendWsMessage({
+          type: 'init-chat',
+          recordingId,
+        } as InitChatEvent);
+
         this.#state.set({ recording: recordingId, messages: [] });
       })
     );

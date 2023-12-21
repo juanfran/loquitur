@@ -52,8 +52,4 @@ export class ApiService {
       formData
     );
   }
-
-  deleteChat(id: string) {
-    return from(this.#trpc.deleteChat.mutate(id));
-  }
 }

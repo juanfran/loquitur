@@ -68,9 +68,6 @@ export const trpcRouter = t.router({
 
       return await getConfig();
     }),
-  deleteChat: t.procedure.input(z.string()).mutation(async (opts) => {
-    chats.delete(opts.input);
-  }),
 });
 
 // export type definition of API
