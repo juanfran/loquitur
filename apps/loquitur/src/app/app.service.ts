@@ -11,6 +11,7 @@ import { environment } from './../environments/environment';
 })
 export class AppService {
   readonly baseUrl = environment.apiURL;
+  #ws?: WebSocket;
 
   constructor(
     private http: HttpClient,
@@ -21,12 +22,26 @@ export class AppService {
   }
 
   public wsListen() {
-    const ws = new WebSocket('ws://localhost:8090');
+    this.#ws = new WebSocket(environment.wsUrl);
 
-    ws.addEventListener('message', (event: MessageEvent) => {
+    this.#ws.addEventListener('message', (event: MessageEvent) => {
       console.log(event.data);
       // this.finishFetch(event.data);
     });
+
+    this.#ws.addEventListener('open', () => {
+      this.sendWsMessage({
+        type: 'chat',
+        msg: 'hola, quien eres?',
+        recordingId: '1f29dd0c-69db-4f6a-ab57-34f5b08b4d89',
+      });
+    });
+  }
+
+  sendWsMessage(message: object) {
+    if (this.#ws?.readyState === WebSocket.OPEN) {
+      this.#ws?.send(JSON.stringify(message));
+    }
   }
 
   // public finishFetch(id: Recording['recordID']) {

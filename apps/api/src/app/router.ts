@@ -59,7 +59,7 @@ export const trpcRouter = t.router({
       z.object({
         bbbUrl: z.string().optional(),
         bbbApiKey: z.string().max(150).optional(),
-        openAIApiKey: z.string().max(150).optional(),
+        chatApi: z.string().max(150).optional(),
       })
     )
     .mutation(async (opts) => {

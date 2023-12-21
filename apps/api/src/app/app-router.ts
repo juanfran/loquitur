@@ -9,6 +9,8 @@ import { runPython } from './utils/run-python';
 import { readJSONFile } from './utils/read-json-file';
 import { getText } from './utils/get-text';
 import { fuse } from './utils/search';
+import { WsEvent } from '@loquitur/commons';
+import { chat } from './utils/ai-chat';
 
 function wait() {
   return new Promise((resolve) => {
@@ -72,5 +74,17 @@ export async function appRouter(fastify: FastifyInstance) {
     }
 
     reply.send();
+  });
+
+  fastify.get('/ws', { websocket: true }, (connection) => {
+    connection.socket.on('message', (message: string) => {
+      const data = JSON.parse(message) as WsEvent;
+
+      if (data.type === 'chat') {
+        chat(data).subscribe((it) => {
+          connection.socket.send(JSON.stringify(it.message));
+        });
+      }
+    });
   });
 }

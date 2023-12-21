@@ -5,6 +5,7 @@ const port = process.env.PORT;
 
 const config = {
   apiURL: `http://${host}:${port}`,
+  wsUrl: `ws://${host}:${port}/ws`,
 };
 
 fs.writeFileSync(

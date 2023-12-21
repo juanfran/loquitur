@@ -23,8 +23,8 @@ import { AppStore } from '../app.store';
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>OpenAI API key</mat-label>
-          <input matInput formControlName="openAIApiKey" />
+          <mat-label>Chat url</mat-label>
+          <input matInput formControlName="chatApi" />
         </mat-form-field>
       </mat-dialog-content>
 
@@ -60,7 +60,7 @@ export class SettingsComponent {
   public form = new FormGroup({
     bbbUrl: new FormControl(this.config().bbbUrl, { nonNullable: true }),
     bbbApiKey: new FormControl(this.config().bbbApiKey, { nonNullable: true }),
-    openAIApiKey: new FormControl(this.config().openAIApiKey, {
+    chatApi: new FormControl(this.config().chatApi, {
       nonNullable: true,
     }),
   });

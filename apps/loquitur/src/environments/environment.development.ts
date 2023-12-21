@@ -1,1 +1,1 @@
-export const environment = {"production":false,"apiURL":"http://localhost:3000"};
+export const environment = {"production":false,"apiURL":"http://localhost:3000","wsUrl":"ws://localhost:3000/ws"};

@@ -12,7 +12,7 @@ import { appRouter } from './app-router';
 import { fuse } from './utils/search';
 import { getTexts } from './utils/get-texts';
 
-// import ws from '@fastify/websocket';
+import ws from '@fastify/websocket';
 
 export interface AppOptions {}
 
@@ -24,7 +24,7 @@ function initSeachDb() {
 
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
   initSeachDb();
-  // fastify.register(ws);
+  fastify.register(ws);
 
   fastify.register(fastifyStatic, {
     root: path.join(__dirname, '../../../../../../../uploads/'),
