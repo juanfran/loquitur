@@ -1,14 +1,19 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
+  inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WhisperResponse } from '@loquitur/commons';
+import { filterNil } from 'ngxtension/filter-nil';
+import { Observable, Subject, distinctUntilChanged, filter } from 'rxjs';
 
 @Component({
   selector: 'loqui-record-text',
@@ -18,49 +23,102 @@ import { WhisperResponse } from '@loquitur/commons';
   standalone: true,
   imports: [],
 })
-export class RecordTextComponent implements OnInit, OnChanges {
-  @Input({ required: true })
-  public whisper!: WhisperResponse[];
+export class RecordTextComponent implements OnInit, AfterViewInit {
+  #destroyRef = inject(DestroyRef);
+  #elementRef = inject(ElementRef<HTMLElement>);
 
-  @Input()
-  public time: number = 0;
+  @Input({ required: true })
+  whisper!: WhisperResponse[];
+
+  @Input({ required: true })
+  time!: Observable<number>;
 
   @Output()
-  public selectTime = new EventEmitter<number>();
+  selectTime = new EventEmitter<number>();
 
-  public currentEntryIndex = 0;
-  public currentWordIndex = 0;
+  words: HTMLElement[] = [];
+  renderWord$ = new Subject<number>();
+  renderEntry$ = new Subject<number>();
 
-  public ngOnInit() {
-    this.findCurrent();
+  ngAfterViewInit(): void {
+    this.words = Array.from(
+      this.#elementRef.nativeElement.querySelectorAll('.word')
+    );
+
+    this.renderWord$
+      .pipe(
+        distinctUntilChanged(),
+        filterNil(),
+        filter((index) => index >= 0),
+        takeUntilDestroyed(this.#destroyRef)
+      )
+      .subscribe((index) => {
+        this.#elementRef.nativeElement
+          .querySelector('.current-word')
+          ?.classList.remove('current-word');
+
+        this.words[index].classList.add('current-word');
+      });
+
+    this.renderEntry$
+      .pipe(
+        distinctUntilChanged(),
+        filterNil(),
+        filter((index) => index >= 0),
+        takeUntilDestroyed(this.#destroyRef)
+      )
+      .subscribe((index) => {
+        this.#elementRef.nativeElement
+          .querySelector('.current')
+          ?.classList.remove('current');
+
+        document.getElementById(`entry-${index}`)?.classList.add('current');
+      });
   }
 
-  public findCurrent() {
-    this.currentEntryIndex = this.whisper.findIndex((it) => {
-      return this.time >= it.start && this.time <= it.end;
+  ngOnInit() {
+    this.time.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((time) => {
+      this.findCurrent(time);
+    });
+  }
+
+  findCurrent(time: number) {
+    if (!this.words.length) {
+      return;
+    }
+
+    const entryIndex = this.whisper.findIndex((it) => {
+      return time >= it.start && time <= it.end;
     });
 
-    const entry = this.whisper[this.currentEntryIndex];
-    let newCurrentWordIndex = -1;
+    const words = this.whisper.flatMap((it) => it.words);
+    let wordIndex = words.findIndex((it) => {
+      return time >= it.start && time <= it.end;
+    });
 
-    if (entry) {
-      newCurrentWordIndex = entry.words.findIndex((it) => {
-        return this.time >= it.start && this.time <= it.end;
-      });
+    if (wordIndex === -1) {
+      const nearWord = words
+        .map((it, index) => {
+          {
+            return {
+              diff: time - it.end,
+              index,
+            };
+          }
+        })
+        .filter((it) => it.diff > 0)
+        .toSorted((a, b) => {
+          return a > b ? 1 : -1;
+        })[0];
+
+      wordIndex = nearWord.index;
     }
 
-    if (newCurrentWordIndex !== -1) {
-      this.currentWordIndex = newCurrentWordIndex;
-    }
+    this.renderWord$.next(wordIndex);
+    this.renderEntry$.next(entryIndex);
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['time']) {
-      this.findCurrent();
-    }
-  }
-
-  public selectResult(time: number) {
+  selectResult(time: number) {
     this.selectTime.next(time);
   }
 }

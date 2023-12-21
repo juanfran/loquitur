@@ -26,42 +26,42 @@ import { SearchComponent } from './search/search.component';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
-  public form = new FormControl();
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private dialog = inject(MatDialog);
-  private appStore = inject(AppStore);
+  form = new FormControl();
+  #router = inject(Router);
+  #route = inject(ActivatedRoute);
+  #dialog = inject(MatDialog);
+  #appStore = inject(AppStore);
 
-  readonly config = this.appStore.config;
+  readonly config = this.#appStore.config;
 
-  public ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params) => {
+  ngOnInit(): void {
+    this.#route.queryParamMap.subscribe((params) => {
       this.form.setValue(params.get('query'));
     });
   }
 
-  public submit() {
-    this.router.navigate(['search'], {
+  submit() {
+    this.#router.navigate(['search'], {
       queryParams: {
         query: this.form.value,
       },
     });
   }
 
-  public openSearch() {
-    this.dialog.open(SearchComponent, {
+  openSearch() {
+    this.#dialog.open(SearchComponent, {
       width: '650px',
     });
   }
 
-  public openSettings() {
-    this.dialog.open(SettingsComponent, {
+  openSettings() {
+    this.#dialog.open(SettingsComponent, {
       width: '450px',
     });
   }
 
-  public addMedia() {
-    this.dialog.open(AddMediaComponent, {
+  addMedia() {
+    this.#dialog.open(AddMediaComponent, {
       width: '650px',
     });
   }

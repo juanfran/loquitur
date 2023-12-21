@@ -9,7 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { AppService } from '../app.service';
 import { MatCardModule } from '@angular/material/card';
 import { RecordTextComponent } from '../record-text/record-text.component';
@@ -82,7 +82,8 @@ export class RecordComponent {
   @ViewChild('speakersWrapper')
   speakersWrapper!: ElementRef<HTMLElement>;
 
-  videoTime: number = 0;
+  videoTime$ = new BehaviorSubject<number>(0);
+  videoTime = this.videoTime$.asObservable();
 
   initVideo() {
     const text = this.textQuery.data();
@@ -111,7 +112,7 @@ export class RecordComponent {
   }
 
   timeUpdate(event: Event) {
-    this.videoTime = (event.target as HTMLVideoElement).currentTime;
+    this.videoTime$.next((event.target as HTMLVideoElement).currentTime);
   }
 
   selectTime(time: number) {
