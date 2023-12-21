@@ -16,6 +16,7 @@
   </mat-card-content>
   <mat-card-actions>
     <a mat-button [routerLink]="['record', record.id]">Detail</a>
+    <button mat-button (click)="deleteReconding(record.id)">Delete</button>
   </mat-card-actions>
 </mat-card>
 }

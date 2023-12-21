@@ -8,6 +8,7 @@ import { fuse } from './utils/search';
 import { BBBRecording, SearchResult } from '@loquitur/commons';
 import bbb from 'bigbluebutton-js';
 import { getApiBB } from './utils/bbb-api';
+import fs from 'fs';
 
 export const t = initTRPC.create();
 
@@ -80,6 +81,11 @@ export const trpcRouter = t.router({
 
       return await getConfig();
     }),
+  deleteRecording: t.procedure.input(z.string()).mutation(async (opts) => {
+    const path = './uploads/' + opts.input;
+
+    fs.rmdirSync(path, { recursive: true });
+  }),
 });
 
 // export type definition of API

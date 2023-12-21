@@ -33,4 +33,8 @@ export class RecordingsComponent {
 
   recordings = this.#recordingsStore.recordings;
   baseUrl = this.#appService.baseUrl;
+
+  deleteReconding(id: string) {
+    this.#recordingsStore.actions.deleterecording(id);
+  }
 }

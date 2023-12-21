@@ -63,4 +63,8 @@ export class ApiService {
       {}
     );
   }
+
+  deleteRecording(id: string) {
+    return from(this.#trpc.deleteRecording.mutate(id));
+  }
 }
