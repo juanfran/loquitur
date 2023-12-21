@@ -7,6 +7,7 @@ Loquitur is a web application that allows users to upload videos or download the
 - Python 3.10
 - [WhisperX](https://github.com/m-bain/whisperX)
 - NVM or Node 20
+- [Ollama](https://github.com/jmorganca/ollama) (Optional, only for AI chat)
 
 ## Installation
 
