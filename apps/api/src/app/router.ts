@@ -5,8 +5,8 @@ import { getRecordings } from './utils/get-recordings';
 import { getText } from './utils/get-text';
 import { setName } from './utils/set-name';
 import { fuse } from './utils/search';
-import { SearchResult } from '@loquitur/commons';
-import { chats } from './utils/chats';
+import { BBBRecording, SearchResult } from '@loquitur/commons';
+import bbb from 'bigbluebutton-js';
 
 export const t = initTRPC.create();
 
@@ -26,13 +26,28 @@ export const trpcRouter = t.router({
     return getConfig();
   }),
   search: t.procedure.input(z.string()).query(({ input }) => {
-    console.log(input);
-
     const result = fuse.search<SearchResult>(input);
 
-    console.log(result);
-
     return result;
+  }),
+  bbb: t.procedure.query(async () => {
+    const config = await getConfig();
+
+    const { bbbUrl, bbbApiKey } = config;
+
+    if (!bbbUrl || !bbbApiKey) {
+      return [];
+    }
+
+    const apiBB = bbb.api(bbbUrl, bbbApiKey);
+
+    const result = await bbb.http(apiBB.recording.getRecordings({}));
+
+    const recordings: BBBRecording[] = result.recordings;
+
+    recordings.sort((a, b) => (a.startTime > b.startTime ? -1 : 1));
+
+    return recordings;
   }),
   setName: t.procedure
     .input(

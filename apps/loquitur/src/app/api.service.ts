@@ -52,4 +52,8 @@ export class ApiService {
       formData
     );
   }
+
+  bbb() {
+    return from(this.#trpc.bbb.query());
+  }
 }

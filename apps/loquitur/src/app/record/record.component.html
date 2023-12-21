@@ -18,7 +18,9 @@
       <mat-card-header>
         <mat-card-title-group>
           <mat-card-title>{{ record.name }} </mat-card-title>
-          <mat-card-subtitle>{{ record | loquiHowLong }} </mat-card-subtitle>
+          <mat-card-subtitle
+            >{{ record.date | loquiHowLong }}
+          </mat-card-subtitle>
         </mat-card-title-group>
       </mat-card-header>
       <mat-card-content>

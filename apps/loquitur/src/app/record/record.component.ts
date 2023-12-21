@@ -29,6 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ChatComponent } from '../chat/chat.component';
 import { AppStore } from '../app.store';
+import { ChatStore } from '../chat/chat.store';
 
 @Component({
   selector: 'loqui-record',
@@ -57,11 +58,16 @@ export class RecordComponent {
   #cd = inject(ChangeDetectorRef);
   #destroyRef = inject(DestroyRef);
   #dialog = inject(MatDialog);
+  #chatStore = inject(ChatStore);
   baseUrl = this.#appService.baseUrl;
   readonly config = this.#appStore.config;
 
   @Input({ required: true }) set id(value: string) {
     this.#id.set(value);
+
+    if (value) {
+      this.#chatStore.actions.recording(value);
+    }
   }
 
   @Input() segment?: string;

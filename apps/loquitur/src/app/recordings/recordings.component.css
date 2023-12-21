@@ -5,7 +5,7 @@
 }
 
 .card {
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
   position: relative;
 }
 
@@ -28,6 +28,6 @@ mat-spinner {
 }
 
 mat-button-toggle-group {
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
   float: right;
 }

@@ -67,8 +67,6 @@ export class ChatComponent {
   message = new FormControl('', [Validators.required]);
 
   constructor() {
-    this.#chatStore.actions.recording(this.data.recordingId);
-
     this.messages$
       .pipe(
         map((it) => {

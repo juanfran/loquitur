@@ -7,6 +7,10 @@ import { MatInputModule } from '@angular/material/input';
 import { AddMediaService } from './add-media.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+import { HowLongPipe } from '../pipes/how-long.pipe';
+import { RangeDatePipe } from '../pipes/range-date.pipe';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'loqui-add-media',
@@ -41,13 +45,38 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         </div>
       </mat-tab>
       <mat-tab label="Import from BigBlueButton">
-        <div class="content">
-          @if (!config().bbbApiKey || !config().bbbUrl) {
-          <p>BigBlueButton API key and URL must be set in settings.</p>
-          } @else {
-          <p>test</p>
-          }
-        </div>
+        <mat-dialog-content>
+          <div class="content">
+            @if (!config().bbbApiKey || !config().bbbUrl) {
+            <p>BigBlueButton API key and URL must be set in settings.</p>
+            } @else { @for(record of bbbElements.data(); track record.recordID)
+            {
+            <mat-card class="card">
+              <mat-card-header>
+                <mat-card-title-group>
+                  <mat-card-title>{{ record.name }} </mat-card-title>
+                  <mat-card-subtitle
+                    >{{ record.startTime | loquiHowLong }}
+                  </mat-card-subtitle>
+                  @if (record.playback.format.preview?.images?.image; as
+                  imageItem) {
+                  <img mat-card-sm-image [src]="imageItem[0]" />
+                  }
+                </mat-card-title-group>
+              </mat-card-header>
+              <mat-card-content>
+                <p><span>Duration:</span> {{ record | loquiRangeDate }}</p>
+                <p><span>Speakers:</span> {{ record.participants }}</p>
+                <mat-divider></mat-divider>
+              </mat-card-content>
+              <mat-card-actions>
+                <button type="text" mat-button>Download</button>
+              </mat-card-actions>
+            </mat-card>
+
+            } }
+          </div>
+        </mat-dialog-content>
       </mat-tab>
     </mat-tab-group>
   `,
@@ -61,6 +90,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatInputModule,
     MatProgressBarModule,
     MatSnackBarModule,
+    MatCardModule,
+    HowLongPipe,
+    RangeDatePipe,
+    MatDividerModule,
   ],
 })
 export class AddMediaComponent {
@@ -68,6 +101,7 @@ export class AddMediaComponent {
   private addMediaService = inject(AddMediaService);
 
   uploadMedia = this.addMediaService.uploadMedia;
+  bbbElements = this.addMediaService.bbbElements;
 
   readonly config = this.appStore.config;
 

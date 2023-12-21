@@ -1,5 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { injectMutation } from '@tanstack/angular-query-experimental';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
 import { ApiService } from '../api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,5 +23,10 @@ export class AddMediaService {
         duration: 3000,
       });
     },
+  }));
+
+  bbbElements = injectQuery(() => ({
+    queryKey: ['bbb'],
+    queryFn: () => lastValueFrom(this.#apiService.bbb()),
   }));
 }

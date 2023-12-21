@@ -19,7 +19,7 @@ import { AppStore } from '../app.store';
 
         <mat-form-field>
           <mat-label>BigBlueButton API key</mat-label>
-          <input matInput formControlName="bbbApiKey" />
+          <input matInput type="password" formControlName="bbbApiKey" />
         </mat-form-field>
 
         <mat-form-field>

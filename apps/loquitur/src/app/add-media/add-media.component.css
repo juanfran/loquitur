@@ -11,3 +11,8 @@
     inline-size: 75%;
   }
 }
+
+.card {
+  margin-block-end: var(--size-4);
+  position: relative;
+}
