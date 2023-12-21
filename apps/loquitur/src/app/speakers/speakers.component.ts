@@ -95,7 +95,8 @@ export class SpeakersComponent implements OnChanges {
     });
   }
 
-  submit() {
+  submit(event: Event) {
+    event.preventDefault();
     const oldName = this.renderList[this.edit()].name;
 
     this.newName.emit({

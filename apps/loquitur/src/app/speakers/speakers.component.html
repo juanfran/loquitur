@@ -6,7 +6,7 @@
     @for (speaker of renderList; track speaker; let i = $index) {
     <div class="speaker">
       @if (edit() === i) {
-      <form (submit)="submit()">
+      <form (submit)="submit($event)">
         <mat-form-field appearance="fill">
           <mat-label>Speaker name</mat-label>
           <input matInput [formControl]="form" />
