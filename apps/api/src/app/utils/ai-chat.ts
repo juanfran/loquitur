@@ -2,8 +2,7 @@ import { ChatEvent, ChatResponse } from '@loquitur/commons';
 import { getText } from './get-text';
 import { getConfig } from '../db';
 import { Observable } from 'rxjs';
-
-const chats = new Map<string, ChatResponse['message'][]>();
+import { chats } from './chats';
 
 async function* streamAsyncIterator(stream) {
   const reader = stream.getReader();
@@ -32,9 +31,14 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
       const current = chats.get(recordingId) ?? [
         {
           role: 'system',
-          content: `You are an assistant. You must answer in the user language. You must answer questions about this conversation: \n ${text.join(
+          content: `You are an assistant. You must answer questions about this conversation: \n ${text.join(
             '\n'
           )}
+
+          END OF THE CONVERSATION.
+
+          Now the user can ask questions about the conversation.
+          Short answers are better than long ones.
     `,
         },
       ];
@@ -43,9 +47,11 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
         ...current,
         {
           role: 'user',
-          content: event.msg,
+          content: event.message,
         },
       ]);
+
+      // console.log(chats.get(recordingId));
 
       fetch(config.chatApi + 'chat', {
         method: 'POST',
@@ -62,25 +68,26 @@ export function chat(event: ChatEvent): Observable<ChatResponse> {
         for await (const value of streamAsyncIterator(response.body)) {
           const parsed = JSON.parse(value) as ChatResponse;
 
+          //console.log(parsed);
           observer.next(parsed);
           messanges.push(parsed);
 
           if (parsed.done) {
             observer.complete();
 
+            const content = messanges
+              .map((it) => {
+                return it.message.content;
+              })
+              .join('');
+
             chats.set(recordingId, [
               ...current,
-              ...messanges.map((it) => {
-                return it.message;
-              }),
+              { role: 'assistant', content },
             ]);
           }
         }
       });
     });
   });
-}
-
-export function deleteChat(recordingId: string) {
-  chats.delete(recordingId);
 }

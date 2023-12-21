@@ -6,6 +6,7 @@ import { getText } from './utils/get-text';
 import { setName } from './utils/set-name';
 import { fuse } from './utils/search';
 import { SearchResult } from '@loquitur/commons';
+import { chats } from './utils/chats';
 
 export const t = initTRPC.create();
 
@@ -67,6 +68,9 @@ export const trpcRouter = t.router({
 
       return await getConfig();
     }),
+  deleteChat: t.procedure.input(z.string()).mutation(async (opts) => {
+    chats.delete(opts.input);
+  }),
 });
 
 // export type definition of API

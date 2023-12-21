@@ -82,7 +82,7 @@ export async function appRouter(fastify: FastifyInstance) {
 
       if (data.type === 'chat') {
         chat(data).subscribe((it) => {
-          connection.socket.send(JSON.stringify(it.message));
+          connection.socket.send(JSON.stringify(it));
         });
       }
     });

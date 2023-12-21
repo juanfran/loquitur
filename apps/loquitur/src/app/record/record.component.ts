@@ -5,6 +5,7 @@ import {
   DestroyRef,
   ElementRef,
   Input,
+  OnDestroy,
   ViewChild,
   inject,
   signal,
@@ -28,6 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ChatComponent } from '../chat/chat.component';
 import { AppStore } from '../app.store';
+import { ChatStore } from '../chat/chat.store';
 
 @Component({
   selector: 'loqui-record',
@@ -47,11 +49,11 @@ import { AppStore } from '../app.store';
     MatDialogModule,
   ],
 })
-export class RecordComponent {
+export class RecordComponent implements OnDestroy {
   #apiService = inject(ApiService);
   #appService = inject(AppService);
   #appStore = inject(AppStore);
-
+  #chatStore = inject(ChatStore);
   #queryClient = injectQueryClient();
   #id = signal<string>('');
   #cd = inject(ChangeDetectorRef);
@@ -112,6 +114,9 @@ export class RecordComponent {
   openChat() {
     this.#dialog.open(ChatComponent, {
       width: '800px',
+      data: {
+        recordingId: this.#id(),
+      },
     });
   }
 
@@ -139,5 +144,9 @@ export class RecordComponent {
         });
         this.#queryClient.invalidateQueries({ queryKey: ['text', this.#id()] });
       });
+  }
+
+  ngOnDestroy() {
+    this.#chatStore.actions.destroy(this.#id());
   }
 }

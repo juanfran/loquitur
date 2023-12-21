@@ -41,3 +41,7 @@ mat-dialog-content {
     }
   }
 }
+
+.spinner {
+  inline-size: 48px;
+}

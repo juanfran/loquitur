@@ -1,6 +1,6 @@
 export interface ChatEvent {
   type: 'chat';
-  msg: string;
+  message: string;
   recordingId: string;
 }
 
