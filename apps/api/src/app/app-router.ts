@@ -5,21 +5,13 @@ import path from 'node:path';
 const pump = util.promisify(pipeline);
 import fs from 'fs';
 import { v4 } from 'uuid';
-import { runPython } from './utils/run-python';
-import { readJSONFile } from './utils/read-json-file';
-import { getText } from './utils/get-text';
-import { fuse } from './utils/search';
-import { WsEvent } from '@loquitur/commons';
+import { BBBRecording, WsEvent } from '@loquitur/commons';
 import { chat } from './utils/ai-chat';
 import { chats } from './utils/chats';
-
-function wait() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(null);
-    }, 3000);
-  });
-}
+import { parseFile } from './utils/parse-file';
+import { downloadBBB } from './utils/download-bbb';
+import { getApiBB } from './utils/bbb-api';
+import bbb from 'bigbluebutton-js';
 
 export async function appRouter(fastify: FastifyInstance) {
   fastify.post('/upload', async function (req, reply) {
@@ -42,39 +34,35 @@ export async function appRouter(fastify: FastifyInstance) {
 
         await pump(part.file, fs.createWriteStream(filePath));
 
-        await runPython(filePath, id);
-
-        const metadataPath = rootFile + 'metadata.json';
-
-        const initialData = readJSONFile(metadataPath) as {
-          duration: number;
-          size: number;
-          speakers: string[];
-        };
-
-        const metadata = {
-          ...initialData,
-          name: fileName,
-          date: new Date().toISOString(),
-        };
-
-        // add to search
-        fs.writeFileSync(metadataPath, JSON.stringify(metadata));
-
-        const textFile = getText(id);
-
-        textFile.forEach((it, index) => {
-          fuse.add({
-            id: id,
-            name: fileName,
-            text: it.text,
-            segment: index,
-          });
-        });
+        await parseFile(fileName, filePath, id);
       }
     }
 
     reply.send();
+  });
+
+  fastify.route({
+    method: 'POST',
+    url: '/fetch-bbb/:id',
+    handler: async (request, reply) => {
+      const { path, id } = await downloadBBB(request.params['id']);
+
+      const apiBB = await getApiBB();
+
+      if (!apiBB) {
+        return [];
+      }
+
+      const result = await bbb.http(
+        apiBB.recording.getRecordings({ recordID: request.query['id'] })
+      );
+
+      const recordings: BBBRecording[] = result.recordings;
+
+      await parseFile(recordings[0].name, path, id);
+
+      reply.send();
+    },
   });
 
   fastify.get('/ws', { websocket: true }, (connection) => {

@@ -56,4 +56,11 @@ export class ApiService {
   bbb() {
     return from(this.#trpc.bbb.query());
   }
+
+  fetchBBBRecording(id: string) {
+    return this.#http.post<void>(
+      `${this.#appService.baseUrl}/fetch-bbb/${id}`,
+      {}
+    );
+  }
 }

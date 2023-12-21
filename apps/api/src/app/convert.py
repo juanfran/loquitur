@@ -39,7 +39,8 @@ height = int(image.size[1] * scale)
 image = image.resize((image_size, height))
 image.save(frame_path)
 
-os.remove(source)
+if not os.path.isfile(video):
+  os.remove(source)
 
 # Init whisper
 device = "cuda"

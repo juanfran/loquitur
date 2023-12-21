@@ -1,16 +1,28 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { AppStore } from '../app.store';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
-import { AddMediaService } from './add-media.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { HowLongPipe } from '../pipes/how-long.pipe';
 import { RangeDatePipe } from '../pipes/range-date.pipe';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {
+  injectMutation,
+  injectQuery,
+} from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
+import { ApiService } from '../api.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'loqui-add-media',
@@ -60,7 +72,7 @@ import { MatDividerModule } from '@angular/material/divider';
                   </mat-card-subtitle>
                   @if (record.playback.format.preview?.images?.image; as
                   imageItem) {
-                  <img mat-card-sm-image [src]="imageItem[0]" />
+                  <img [src]="imageItem[0]" />
                   }
                 </mat-card-title-group>
               </mat-card-header>
@@ -70,7 +82,17 @@ import { MatDividerModule } from '@angular/material/divider';
                 <mat-divider></mat-divider>
               </mat-card-content>
               <mat-card-actions>
-                <button type="text" mat-button>Download</button>
+                @if (inProgress().includes(record.recordID)) {
+                <mat-progress-spinner mode="indeterminate" diameter="40" />
+                } @else {
+                <button
+                  type="text"
+                  (click)="initFetchBbb(record.recordID)"
+                  mat-button
+                >
+                  Download
+                </button>
+                }
               </mat-card-actions>
             </mat-card>
 
@@ -94,22 +116,61 @@ import { MatDividerModule } from '@angular/material/divider';
     HowLongPipe,
     RangeDatePipe,
     MatDividerModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class AddMediaComponent {
-  private appStore = inject(AppStore);
-  private addMediaService = inject(AddMediaService);
+  #appStore = inject(AppStore);
+  #apiService = inject(ApiService);
+  #snackBar = inject(MatSnackBar);
 
-  uploadMedia = this.addMediaService.uploadMedia;
-  bbbElements = this.addMediaService.bbbElements;
+  inProgress = signal([] as string[]);
 
-  readonly config = this.appStore.config;
+  uploadMedia = injectMutation(() => ({
+    mutationFn: (files: File[]) =>
+      lastValueFrom(this.#apiService.uploadMedia(files)),
 
-  public onFileSelected(event: Event): void {
+    onSuccess: () => {
+      this.#snackBar.open('Upload success', 'Close', {
+        duration: 3000,
+      });
+    },
+  }));
+
+  bbbElements = injectQuery(() => ({
+    queryKey: ['bbb'],
+    queryFn: () => lastValueFrom(this.#apiService.bbb()),
+  }));
+
+  fetchBbb = injectMutation(() => ({
+    onMutate: (id: string) => {
+      this.inProgress.set([...this.inProgress(), id]);
+    },
+    mutationFn: (id: string) =>
+      lastValueFrom(this.#apiService.fetchBBBRecording(id)),
+
+    onSuccess: (_, id) => {
+      this.inProgress.set(this.inProgress().filter((it) => it !== id));
+
+      this.#snackBar.open('Upload success', 'Close', {
+        duration: 3000,
+      });
+    },
+  }));
+
+  readonly config = this.#appStore.config;
+
+  onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
     const fileList = target.files as FileList;
     const files = Array.from(fileList);
 
     this.uploadMedia().mutate(files);
+  }
+
+  initFetchBbb(recordId: string): void {
+    this.fetchBbb().mutate(recordId);
+
+    // this.fetchBbb().isPending
   }
 }

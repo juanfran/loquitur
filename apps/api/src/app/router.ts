@@ -7,6 +7,7 @@ import { setName } from './utils/set-name';
 import { fuse } from './utils/search';
 import { BBBRecording, SearchResult } from '@loquitur/commons';
 import bbb from 'bigbluebutton-js';
+import { getApiBB } from './utils/bbb-api';
 
 export const t = initTRPC.create();
 
@@ -31,15 +32,11 @@ export const trpcRouter = t.router({
     return result;
   }),
   bbb: t.procedure.query(async () => {
-    const config = await getConfig();
+    const apiBB = await getApiBB();
 
-    const { bbbUrl, bbbApiKey } = config;
-
-    if (!bbbUrl || !bbbApiKey) {
+    if (!apiBB) {
       return [];
     }
-
-    const apiBB = bbb.api(bbbUrl, bbbApiKey);
 
     const result = await bbb.http(apiBB.recording.getRecordings({}));
 
