@@ -11,6 +11,7 @@ import { getText } from './utils/get-text';
 import { fuse } from './utils/search';
 import { WsEvent } from '@loquitur/commons';
 import { chat } from './utils/ai-chat';
+import { chats } from './utils/chats';
 
 function wait() {
   return new Promise((resolve) => {
@@ -85,6 +86,10 @@ export async function appRouter(fastify: FastifyInstance) {
           connection.socket.send(JSON.stringify(it));
         });
       }
+    });
+
+    connection.socket.on('close', () => {
+      chats.clear();
     });
   });
 }

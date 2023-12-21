@@ -64,6 +64,10 @@ export class RecordComponent implements OnDestroy {
 
   @Input({ required: true }) set id(value: string) {
     this.#id.set(value);
+
+    if (value) {
+      this.#chatStore.actions.recording(value);
+    }
   }
 
   @Input() segment?: string;

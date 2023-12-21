@@ -9,11 +9,13 @@ import { ApiService } from '../api.service';
 
 interface ChatState {
   loading: boolean;
+  recording: string;
   messages: ChatResponse[];
 }
 
 const initialState: ChatState = {
   loading: false,
+  recording: '',
   messages: [],
 };
 
@@ -27,6 +29,7 @@ export class ChatStore {
   actions = rxActions<{
     message: Pick<ChatEvent, 'message' | 'recordingId'>;
     destroy: string;
+    recording: string;
     chunk: ChatResponse;
   }>();
 
@@ -76,6 +79,14 @@ export class ChatStore {
     return destroy$.pipe(
       mergeMap((recordingId) => {
         return this.#apiService.deleteChat(recordingId);
+      })
+    );
+  });
+
+  #setRecording$ = this.actions.onRecording((recording$) => {
+    return recording$.pipe(
+      tap((recordingId) => {
+        this.#state.set({ recording: recordingId, messages: [] });
       })
     );
   });
