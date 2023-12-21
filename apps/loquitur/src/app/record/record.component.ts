@@ -5,7 +5,6 @@ import {
   DestroyRef,
   ElementRef,
   Input,
-  OnDestroy,
   ViewChild,
   inject,
   signal,
@@ -89,8 +88,6 @@ export class RecordComponent {
   }));
 
   @ViewChild('videoElm') videoElementRef!: ElementRef<HTMLElement>;
-  @ViewChild('speakersWrapper')
-  speakersWrapper!: ElementRef<HTMLElement>;
 
   videoTime$ = new BehaviorSubject<number>(0);
   videoTime = this.videoTime$.asObservable();

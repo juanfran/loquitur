@@ -1,3 +1,5 @@
+import { ChatResponse } from './chat.model';
+
 export interface ChatEvent {
   type: 'chat';
   message: string;
@@ -9,4 +11,9 @@ export interface InitChatEvent {
   recordingId: string;
 }
 
-export type WsEvent = ChatEvent | InitChatEvent;
+export interface WSChatResponse {
+  type: 'chat-response';
+  content: ChatResponse;
+}
+
+export type WsEvent = ChatEvent | InitChatEvent | WSChatResponse;

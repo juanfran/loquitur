@@ -23,6 +23,7 @@ import {
 import { lastValueFrom } from 'rxjs';
 import { ApiService } from '../api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RecordingsStore } from '../recordings/recordings.store';
 
 @Component({
   selector: 'loqui-add-media',
@@ -123,6 +124,7 @@ export class AddMediaComponent {
   #appStore = inject(AppStore);
   #apiService = inject(ApiService);
   #snackBar = inject(MatSnackBar);
+  #recordingsStore = inject(RecordingsStore);
 
   inProgress = signal([] as string[]);
 
@@ -134,6 +136,8 @@ export class AddMediaComponent {
       this.#snackBar.open('Upload success', 'Close', {
         duration: 3000,
       });
+
+      this.#recordingsStore.actions.refetch();
     },
   }));
 
@@ -155,6 +159,8 @@ export class AddMediaComponent {
       this.#snackBar.open('Upload success', 'Close', {
         duration: 3000,
       });
+
+      this.#recordingsStore.actions.refetch();
     },
   }));
 

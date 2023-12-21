@@ -9,7 +9,6 @@ export async function parseFile(
   filePath: string,
   id: string
 ) {
-  console.log('parseFile', fileName, filePath, id);
   await runPython(filePath, id);
 
   const rootFile = 'uploads/' + id + '/';

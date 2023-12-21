@@ -4,7 +4,7 @@ import { rxState } from '@rx-angular/state';
 
 import { rxActions } from '@rx-angular/state/actions';
 import { ApiService } from '../api.service';
-import { merge, mergeMap } from 'rxjs';
+import { exhaustMap, merge, mergeMap } from 'rxjs';
 
 interface RecordingState {
   recordings: Recording[];
@@ -23,6 +23,7 @@ export class RecordingsStore {
   actions = rxActions<{
     setConfig: Partial<Config>;
     deleterecording: string;
+    refetch: void;
   }>();
 
   #state = rxState<RecordingState>(({ set, connect }) => {
@@ -32,6 +33,9 @@ export class RecordingsStore {
       'recordings',
       merge(
         this.#apiService.getRecordings(),
+        this.actions.refetch$.pipe(
+          exhaustMap(() => this.#apiService.getRecordings())
+        ),
         this.actions.deleterecording$.pipe(
           mergeMap((recordingId) => {
             return this.#apiService.deleteRecording(recordingId);

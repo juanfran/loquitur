@@ -69,7 +69,7 @@ export function chat(id: string, event: ChatEvent): Observable<ChatResponse> {
         for await (const value of streamAsyncIterator(response.body)) {
           const parsed = JSON.parse(value) as ChatResponse;
 
-          //console.log(parsed);
+          // console.log(parsed);
           observer.next(parsed);
           messanges.push(parsed);
 

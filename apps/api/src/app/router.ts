@@ -84,6 +84,10 @@ export const trpcRouter = t.router({
   deleteRecording: t.procedure.input(z.string()).mutation(async (opts) => {
     const path = './uploads/' + opts.input;
 
+    fuse.remove((doc: { id: string }) => {
+      return doc.id === opts.input;
+    });
+
     fs.rmdirSync(path, { recursive: true });
   }),
 });

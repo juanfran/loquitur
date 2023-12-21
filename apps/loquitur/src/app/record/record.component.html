@@ -38,19 +38,21 @@
     }
   </div>
 
-  <div class="speakers-wrapper" #speakersWrapper>
-    @if (config().chatApi) {
-    <div class="chat">
-      <button mat-mini-fab color="primary" (click)="openChat()">
-        <mat-icon>chat</mat-icon>
-      </button>
+  <div class="speakers-wrapper">
+    <div class="speakers-inner">
+      @if (config().chatApi) {
+      <div class="chat">
+        <button mat-mini-fab color="primary" (click)="openChat()">
+          <mat-icon>chat</mat-icon>
+        </button>
+      </div>
+      } @if (textQuery.data(); as text) {
+      <loqui-speakers
+        [whisper]="text"
+        (newName)="setNewName($event)"
+      ></loqui-speakers>
+      }
     </div>
-    } @if (textQuery.data(); as text) {
-    <loqui-speakers
-      [whisper]="text"
-      (newName)="setNewName($event)"
-    ></loqui-speakers>
-    }
   </div>
 </div>
 }

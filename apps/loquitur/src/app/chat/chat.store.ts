@@ -1,5 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { ChatEvent, ChatResponse, InitChatEvent } from '@loquitur/commons';
+import {
+  ChatEvent,
+  ChatResponse,
+  InitChatEvent,
+  WsEvent,
+} from '@loquitur/commons';
 import { rxState } from '@rx-angular/state';
 
 import { rxActions } from '@rx-angular/state/actions';
@@ -90,8 +95,11 @@ export class ChatStore {
     set(initialState);
 
     this.#appService.ws?.addEventListener('message', (event: MessageEvent) => {
-      const data = JSON.parse(event.data);
-      this.actions.chunk(data);
+      const data = JSON.parse(event.data) as WsEvent;
+
+      if (data.type === 'chat-response') {
+        this.actions.chunk(data.content);
+      }
     });
   });
 

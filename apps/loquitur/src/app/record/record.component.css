@@ -20,7 +20,6 @@ loqui-record-text {
 }
 
 .speakers-wrapper {
-  position: sticky;
   inline-size: 25%;
 }
 
@@ -30,7 +29,7 @@ loqui-record-text {
   gap: var(--size-4);
 }
 
-loqui-speakers,
+.speakers-inner,
 video {
   position: sticky;
   top: var(--size-4);
