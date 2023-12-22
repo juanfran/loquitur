@@ -51,6 +51,7 @@ npm run start:api
 - Nx
 - Angular 17
 - Ollama
+- WhisperX
 - Fastify
 - Open props
 - TRPC
