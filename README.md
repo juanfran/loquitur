@@ -43,7 +43,8 @@ npm run start:api
 - Implement chat shortcuts for ease of use.
 - Add functionality to download videos with subtitles.
 - Enable audio file uploads.
-- Introduce a feature for uploading skeleton data.
+- Upload with skeleton data & persitance on reload.
+- Upload & AI error handling.
 
 ## Technology Stack
 
